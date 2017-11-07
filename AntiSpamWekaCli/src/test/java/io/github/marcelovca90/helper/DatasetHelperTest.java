@@ -16,6 +16,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -39,14 +41,13 @@ public class DatasetHelperTest
     private DatasetHelper datasetHelper;
 
     @Test
-    public void loadMetadata_shouldReturnNotNullMetadata() throws IOException
+    public void loadMetadata_shouldReturnNotNullMetadata() throws IOException, URISyntaxException
     {
         // given
-        String filename = classLoader.getResource("metadata.txt").getFile().substring(1);
-        String systemFilename = FilenameUtils.separatorsToSystem(filename);
+        String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(systemFilename);
+        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -69,9 +70,8 @@ public class DatasetHelperTest
     public void loadDataset_doNotSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
-        String folder = classLoader.getResource("data/8").getFile().substring(1);
-        String systemFolder = FilenameUtils.separatorsToSystem(folder);
-        Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
 
         // when
         Instances dataset = datasetHelper.loadDataset(metadatum, false);
@@ -85,9 +85,8 @@ public class DatasetHelperTest
     public void loadDataset_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
-        String folder = classLoader.getResource("data/16").getFile().substring(1);
-        String systemFolder = FilenameUtils.separatorsToSystem(folder);
-        Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 17);
+        String folder = Paths.get(classLoader.getResource("data/16").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 17);
 
         // when
         Instances dataset = datasetHelper.loadDataset(metadatum, true);
@@ -98,12 +97,11 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void loadDataset_doSearchArffAndUnavailableArff_shouldReturnNotNullInstances() throws Exception
+    public void load_doSearchArffAndUnavailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
-        String folder = classLoader.getResource("data/32").getFile().substring(1);
-        String systemFolder = FilenameUtils.separatorsToSystem(folder);
-        Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 3);
+        String folder = Paths.get(classLoader.getResource("data/32").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 3);
 
         // when
         Instances dataset = datasetHelper.loadDataset(metadatum, true);
@@ -117,9 +115,8 @@ public class DatasetHelperTest
     public void shuffle_firstElementMustHaveChanged() throws Exception
     {
         // given
-        String folder = classLoader.getResource("data/8").getFile().substring(1);
-        String systemFolder = FilenameUtils.separatorsToSystem(folder);
-        Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
         Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
         // when
@@ -138,9 +135,8 @@ public class DatasetHelperTest
     public void split_shouldReturnTwoSetsWhoseSumMatchesOriginalSetSize() throws Exception
     {
         // given
-        String folder = classLoader.getResource("data/8").getFile().substring(1);
-        String systemFolder = FilenameUtils.separatorsToSystem(folder);
-        Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
         Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
         // when
