@@ -66,7 +66,7 @@ public class DatasetHelper
         return metadata;
     }
 
-    public Instances load(Triple<String, Integer, Integer> metadatum, boolean lookForArff) throws Exception
+    public Instances loadDataset(Triple<String, Integer, Integer> metadatum, boolean lookForArff) throws Exception
     {
         Instances dataset = null;
         String arffFilename = metadatum.getLeft() + File.separator + "data.arff";
@@ -79,15 +79,55 @@ public class DatasetHelper
         }
         else
         {
-            Instances ham = load(metadatum.getLeft() + File.separator + "ham", ClassType.HAM);
-            Instances spam = load(metadatum.getLeft() + File.separator + "spam", ClassType.SPAM);
+            Instances ham = loadDataset(metadatum.getLeft() + File.separator + "ham", ClassType.HAM);
+            Instances spam = loadDataset(metadatum.getLeft() + File.separator + "spam", ClassType.SPAM);
             dataset = merge(ham, spam);
         }
 
         return dataset;
     }
 
-    private Instances load(String filename, ClassType classType) throws IOException
+    public void shuffle(Instances dataset, int seed)
+    {
+        Random random = new Random(seed);
+
+        int numberOfInstances = dataset.size();
+        for (int i = 0; i < numberOfInstances; i++)
+        {
+            int j = random.nextInt(numberOfInstances);
+            Instance a = dataset.get(i);
+            Instance b = dataset.get(j);
+            dataset.set(i, b);
+            dataset.set(j, a);
+        }
+    }
+
+    public Pair<Instances, Instances> split(Instances dataset, double splitPercent)
+    {
+        int numberOfInstances = dataset.size();
+        ArrayList<Attribute> attributes = Collections.list(dataset.enumerateAttributes());
+
+        Instances trainSet = new Instances("trainSet", attributes, (int) (splitPercent * numberOfInstances));
+        for (int i = 0; i < (int) (splitPercent * numberOfInstances); i++)
+            trainSet.add(dataset.get(i));
+        Instances testSet = new Instances("testSet", attributes, (int) ((1 - splitPercent) * numberOfInstances));
+        for (int i = (int) (splitPercent * numberOfInstances); i < numberOfInstances; i++)
+            testSet.add(dataset.get(i));
+
+        return Pair.of(trainSet, testSet);
+    }
+
+    private ArrayList<Attribute> createAttributes(long featureAmount)
+    {
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        for (long i = 0; i < featureAmount; i++)
+            attributes.add(new Attribute("x" + i));
+        attributes.add(new Attribute("y"));
+
+        return attributes;
+    }
+
+    private Instances loadDataset(String filename, ClassType classType) throws IOException
     {
         Instances dataset = null;
 
@@ -147,45 +187,5 @@ public class DatasetHelper
         Arrays.stream(datasets).forEach(mergedSet::addAll);
 
         return mergedSet;
-    }
-
-    public void shuffle(Instances dataset, int seed)
-    {
-        Random random = new Random(seed);
-
-        int numberOfInstances = dataset.size();
-        for (int i = 0; i < numberOfInstances; i++)
-        {
-            int j = random.nextInt(numberOfInstances);
-            Instance a = dataset.get(i);
-            Instance b = dataset.get(j);
-            dataset.set(i, b);
-            dataset.set(j, a);
-        }
-    }
-
-    public Pair<Instances, Instances> split(Instances dataset, double splitPercent)
-    {
-        int numberOfInstances = dataset.size();
-        ArrayList<Attribute> attributes = Collections.list(dataset.enumerateAttributes());
-
-        Instances trainSet = new Instances("trainSet", attributes, (int) (splitPercent * numberOfInstances));
-        for (int i = 0; i < (int) (splitPercent * numberOfInstances); i++)
-            trainSet.add(dataset.get(i));
-        Instances testSet = new Instances("testSet", attributes, (int) ((1 - splitPercent) * numberOfInstances));
-        for (int i = (int) (splitPercent * numberOfInstances); i < numberOfInstances; i++)
-            testSet.add(dataset.get(i));
-
-        return Pair.of(trainSet, testSet);
-    }
-
-    private ArrayList<Attribute> createAttributes(long featureAmount)
-    {
-        ArrayList<Attribute> attributes = new ArrayList<>();
-        for (long i = 0; i < featureAmount; i++)
-            attributes.add(new Attribute("x" + i));
-        attributes.add(new Attribute("y"));
-
-        return attributes;
     }
 }

@@ -66,7 +66,7 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void load_doNotSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
+    public void loadDataset_doNotSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
         String folder = classLoader.getResource("data/8").getFile().substring(1);
@@ -74,7 +74,7 @@ public class DatasetHelperTest
         Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
 
         // when
-        Instances dataset = datasetHelper.load(metadatum, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
         // then
         assertThat(dataset, notNullValue());
@@ -82,7 +82,7 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void load_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
+    public void loadDataset_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
         String folder = classLoader.getResource("data/16").getFile().substring(1);
@@ -90,7 +90,7 @@ public class DatasetHelperTest
         Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 17);
 
         // when
-        Instances dataset = datasetHelper.load(metadatum, true);
+        Instances dataset = datasetHelper.loadDataset(metadatum, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -98,7 +98,7 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void load_doSearchArffAndUnavailableArff_shouldReturnNotNullInstances() throws Exception
+    public void loadDataset_doSearchArffAndUnavailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // given
         String folder = classLoader.getResource("data/32").getFile().substring(1);
@@ -106,7 +106,7 @@ public class DatasetHelperTest
         Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 3);
 
         // when
-        Instances dataset = datasetHelper.load(metadatum, true);
+        Instances dataset = datasetHelper.loadDataset(metadatum, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -120,7 +120,7 @@ public class DatasetHelperTest
         String folder = classLoader.getResource("data/8").getFile().substring(1);
         String systemFolder = FilenameUtils.separatorsToSystem(folder);
         Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
-        Instances dataset = datasetHelper.load(metadatum, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
         // when
         Instance firstBeforeShuffle = dataset.get(0);
@@ -141,7 +141,7 @@ public class DatasetHelperTest
         String folder = classLoader.getResource("data/8").getFile().substring(1);
         String systemFolder = FilenameUtils.separatorsToSystem(folder);
         Triple<String, Integer, Integer> metadatum = Triple.of(systemFolder, 0, 19);
-        Instances dataset = datasetHelper.load(metadatum, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
         // when
         Pair<Instances, Instances> splitDataset = datasetHelper.split(dataset, 0.5);
