@@ -160,13 +160,13 @@ public class DatasetHelper
         try (InputStream inputStream = new FileInputStream(filename))
         {
             byte[] byteBufferA = new byte[SIZE_INT];
-            if (inputStream.read(byteBufferA) == -1)
-                throw new IOException("Could not read number of instances (in fact, zero bytes were read).");
+            if (inputStream.read(byteBufferA) != SIZE_INT)
+                throw new IOException("Could not read number of instances (not enough bytes were read).");
             int numberOfInstances = ByteBuffer.wrap(byteBufferA).getInt();
 
             byte[] byteBufferB = new byte[SIZE_INT];
-            if (inputStream.read(byteBufferB) == -1)
-                throw new IOException("Could not read number of attributes (in fact, zero bytes were read).");
+            if (inputStream.read(byteBufferB) != SIZE_INT)
+                throw new IOException("Could not read number of attributes (not enough bytes were read).");
             int numberOfAttributes = ByteBuffer.wrap(byteBufferB).getInt();
 
             // create attributes
@@ -218,7 +218,7 @@ public class DatasetHelper
         if (Arrays.stream(datasets).allMatch(Objects::nonNull))
         {
             int numberOfAttributes = datasets[0].numAttributes();
-            int numberOfInstances = Arrays.stream(datasets).filter(Objects::nonNull).collect(Collectors.summingInt(Instances::size));
+            int numberOfInstances = Arrays.stream(datasets).collect(Collectors.summingInt(Instances::size));
             ArrayList<Attribute> attributes = createAttributes(numberOfAttributes);
 
             mergedSet = new Instances("mergedDataSet", attributes, numberOfInstances);
