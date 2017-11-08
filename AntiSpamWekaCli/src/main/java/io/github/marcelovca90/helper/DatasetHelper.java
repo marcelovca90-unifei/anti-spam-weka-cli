@@ -101,7 +101,7 @@ public class DatasetHelper
             {
                 arffReader = new ArffReader(fileReader);
                 dataset = arffReader.getData();
-                dataset.setClassIndex(dataset.numAttributes());
+                dataset.setClassIndex(dataset.numAttributes() - 1);
             }
             catch (FileNotFoundException e)
             {
