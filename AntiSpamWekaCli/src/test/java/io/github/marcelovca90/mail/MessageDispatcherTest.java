@@ -1,6 +1,7 @@
 package io.github.marcelovca90.mail;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import javax.mail.Message;
@@ -10,10 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import io.github.marcelovca90.mail.CryptoProtocol;
-import io.github.marcelovca90.mail.MessageBuilder;
-import io.github.marcelovca90.mail.MessageDispatcher;
 
 @RunWith (MockitoJUnitRunner.class)
 public class MessageDispatcherTest
@@ -35,7 +32,19 @@ public class MessageDispatcherTest
     private MessageDispatcher messageDispatcher;
 
     @Test
-    public void sendMail_usingSSLandFakeCredentials_shouldReturnFalse()
+    public void buildSession_usingSSLandFakeCredentials_shouldReturnNotNullSession()
+    {
+        assertThat(messageDispatcher.buildSession(CryptoProtocol.SSL, host, username, password), notNullValue());
+    }
+
+    @Test
+    public void buildSession_usingTLSandFakeCredentials_shouldReturnNotNullSession()
+    {
+        assertThat(messageDispatcher.buildSession(CryptoProtocol.TLS, host, username, password), notNullValue());
+    }
+
+    @Test
+    public void send_usingSSLandFakeCredentials_shouldReturnFalse()
     {
         // given
         session = messageDispatcher.buildSession(CryptoProtocol.SSL, host, username, password);
@@ -49,10 +58,10 @@ public class MessageDispatcherTest
     }
 
     @Test
-    public void sendMail_usingTLSandFakeCredentialsDryRun_shouldReturnFalse()
+    public void send_usingTLSandFakeCredentialsDryRun_shouldReturnFalse()
     {
         // given
-        session = messageDispatcher.buildSession(CryptoProtocol.SSL, host, username, password);
+        session = messageDispatcher.buildSession(CryptoProtocol.TLS, host, username, password);
         message = messageBuilder.withFrom(from).withRecipients(recipients).withSubject(subject).withText(text).withFilename(filename).withSession(session).build();
 
         // when
