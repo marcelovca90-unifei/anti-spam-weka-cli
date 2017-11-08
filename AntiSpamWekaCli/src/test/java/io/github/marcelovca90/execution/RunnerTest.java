@@ -19,19 +19,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.runner;
+package io.github.marcelovca90.execution;
 
-import java.util.Arrays;
+import org.junit.Test;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import io.github.marcelovca90.execution.Runner;
 
-public class Runner
+public class RunnerTest
 {
-    private static final Logger LOGGER = LogManager.getLogger(Runner.class);
-
-    public static void main(String[] args)
+    @Test
+    public void main()
     {
-        LOGGER.debug(Arrays.toString(args));
+        Runner.main(new String[0]);
     }
 }

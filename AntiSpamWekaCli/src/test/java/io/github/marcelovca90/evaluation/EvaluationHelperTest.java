@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.helper;
+package io.github.marcelovca90.evaluation;
 
 import java.nio.file.Paths;
 
@@ -30,16 +30,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.common.TimedEvaluation;
+import io.github.marcelovca90.classification.ClassifierBuilder;
+import io.github.marcelovca90.data.DataHelper;
+import io.github.marcelovca90.evaluation.TimedEvaluation;
+import io.github.marcelovca90.evaluation.EvaluationHelper;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 @RunWith (MockitoJUnitRunner.class)
-public class ValidationHelperTest
+public class EvaluationHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
-    private final DatasetHelper datasetHelper = new DatasetHelper();
+    private final DataHelper datasetHelper = new DataHelper();
     private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
     private Classifier classifier;
@@ -48,7 +51,7 @@ public class ValidationHelperTest
     private TimedEvaluation evaluation;
 
     @InjectMocks
-    private ValidationHelper validationHelper;
+    private EvaluationHelper validationHelper;
 
     @Test
     public void computeAndPrint_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception

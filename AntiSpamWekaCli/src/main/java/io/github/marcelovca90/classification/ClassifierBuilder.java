@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.helper;
+package io.github.marcelovca90.classification;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

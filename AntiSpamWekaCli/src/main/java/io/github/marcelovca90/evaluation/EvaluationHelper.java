@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.helper;
+package io.github.marcelovca90.evaluation;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,13 +32,12 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.github.marcelovca90.common.ClassType;
-import io.github.marcelovca90.common.TimedEvaluation;
+import io.github.marcelovca90.data.ClassType;
 import weka.classifiers.AbstractClassifier;
 
-public class ValidationHelper
+public class EvaluationHelper
 {
-    private static final Logger LOGGER = LogManager.getLogger(ValidationHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(EvaluationHelper.class);
     private static final Map<Class<? extends AbstractClassifier>, Map<String, DescriptiveStatistics>> RESULTS = new HashMap<>();
 
     public void compute(Class<? extends AbstractClassifier> clazz, TimedEvaluation evaluation)

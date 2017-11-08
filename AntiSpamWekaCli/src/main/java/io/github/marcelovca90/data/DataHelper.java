@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.helper;
+package io.github.marcelovca90.data;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,16 +48,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.arturmkrtchyan.sizeof4j.SizeOf;
 
-import io.github.marcelovca90.common.ClassType;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader.ArffReader;
 
-public class DatasetHelper
+public class DataHelper
 {
-    private static final Logger LOGGER = LogManager.getLogger(DatasetHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataHelper.class);
     private static final int SIZE_INT = SizeOf.intSize();
     private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 

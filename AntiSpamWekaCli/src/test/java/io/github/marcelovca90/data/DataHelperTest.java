@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  ******************************************************************************/
-package io.github.marcelovca90.helper;
+package io.github.marcelovca90.data;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -43,16 +43,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.data.DataHelper;
 import weka.core.Instance;
 import weka.core.Instances;
 
 @RunWith (MockitoJUnitRunner.class)
-public class DatasetHelperTest
+public class DataHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
 
     @InjectMocks
-    private DatasetHelper datasetHelper;
+    private DataHelper datasetHelper;
 
     @Test
     public void loadMetadata_invalidFilename_shouldReturnEmptyMetadata()
