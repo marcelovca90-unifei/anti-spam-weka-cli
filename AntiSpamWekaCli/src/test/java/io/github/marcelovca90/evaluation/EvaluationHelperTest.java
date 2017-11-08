@@ -42,7 +42,7 @@ import weka.core.Instances;
 public class EvaluationHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
-    private final DataHelper datasetHelper = new DataHelper();
+    private final DataHelper dataHelper = new DataHelper();
     private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
     private Classifier classifier;
@@ -51,7 +51,7 @@ public class EvaluationHelperTest
     private TimedEvaluation evaluation;
 
     @InjectMocks
-    private EvaluationHelper validationHelper;
+    private EvaluationHelper evaluationHelper;
 
     @Test
     public void computeAndPrint_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception
@@ -61,8 +61,8 @@ public class EvaluationHelperTest
         performTesting();
 
         // when
-        validationHelper.compute(MultilayerPerceptron.class, evaluation);
-        validationHelper.print(MultilayerPerceptron.class);
+        evaluationHelper.compute(MultilayerPerceptron.class, evaluation);
+        evaluationHelper.print(MultilayerPerceptron.class);
     }
 
     @Test
@@ -73,20 +73,20 @@ public class EvaluationHelperTest
         {
             performTraining(i);
             performTesting();
-            validationHelper.compute(MultilayerPerceptron.class, evaluation);
+            evaluationHelper.compute(MultilayerPerceptron.class, evaluation);
         }
 
         // when
-        validationHelper.print(MultilayerPerceptron.class);
+        evaluationHelper.print(MultilayerPerceptron.class);
     }
 
     private void performTraining(int seed) throws Exception
     {
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
-        datasetHelper.shuffle(dataset, seed);
-        Pair<Instances, Instances> datasets = datasetHelper.split(dataset, 0.5);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        dataHelper.shuffle(dataset, seed);
+        Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
         trainSet = datasets.getLeft();
         testSet = datasets.getRight();
 

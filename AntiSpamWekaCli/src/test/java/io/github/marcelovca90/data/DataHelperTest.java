@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.data.DataHelper;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -53,7 +52,7 @@ public class DataHelperTest
     private final ClassLoader classLoader = getClass().getClassLoader();
 
     @InjectMocks
-    private DataHelper datasetHelper;
+    private DataHelper dataHelper;
 
     @Test
     public void loadMetadata_invalidFilename_shouldReturnEmptyMetadata()
@@ -62,7 +61,7 @@ public class DataHelperTest
         String filename = "foo_metadata_bar.txt";
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
+        Set<Triple<String, Integer, Integer>> metadata = dataHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -76,7 +75,7 @@ public class DataHelperTest
         String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
+        Set<Triple<String, Integer, Integer>> metadata = dataHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -103,7 +102,7 @@ public class DataHelperTest
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 17);
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -118,7 +117,7 @@ public class DataHelperTest
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 3);
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -136,7 +135,7 @@ public class DataHelperTest
         FileUtils.moveFile(new File(folder + File.separator + "lipsum.arff"), new File(folder + File.separator + "data.arff"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -147,14 +146,14 @@ public class DataHelperTest
     }
 
     @Test
-    public void loadDataset_doNotSearchArffAndAvailablFile_shouldReturnNotNullInstances() throws URISyntaxException
+    public void loadDataset_doNotSearchArffAndAvailableFile_shouldReturnNotNullInstances() throws URISyntaxException
     {
         // given
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
 
         // then
         assertThat(dataset, notNullValue());
@@ -172,7 +171,7 @@ public class DataHelperTest
         FileUtils.moveFile(new File(folder + File.separator + "spam"), new File(folder + File.separator + "spam.bkp"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -194,7 +193,7 @@ public class DataHelperTest
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "spam"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -211,11 +210,11 @@ public class DataHelperTest
         // given
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
 
         // when
         Instance firstBeforeShuffle = dataset.get(0);
-        datasetHelper.shuffle(dataset, 0);
+        dataHelper.shuffle(dataset, 0);
         Instance firstAfterShuffle = dataset.get(0);
 
         // then
@@ -231,10 +230,10 @@ public class DataHelperTest
         // given
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = datasetHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
 
         // when
-        Pair<Instances, Instances> splitDataset = datasetHelper.split(dataset, 0.5);
+        Pair<Instances, Instances> splitDataset = dataHelper.split(dataset, 0.5);
 
         // then
         assertThat(splitDataset, notNullValue());
