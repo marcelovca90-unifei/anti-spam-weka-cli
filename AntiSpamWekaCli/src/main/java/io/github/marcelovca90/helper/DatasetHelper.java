@@ -101,7 +101,7 @@ public class DatasetHelper
             {
                 arffReader = new ArffReader(fileReader);
                 dataset = arffReader.getData();
-                dataset.setClassIndex(dataset.numAttributes() - 1);
+                dataset.setClassIndex(dataset.numAttributes());
             }
             catch (FileNotFoundException e)
             {
@@ -141,15 +141,20 @@ public class DatasetHelper
 
     public Pair<Instances, Instances> split(Instances dataset, double splitPercent)
     {
+        int numberOfAttributes = dataset.numAttributes();
         int numberOfInstances = dataset.size();
         ArrayList<Attribute> attributes = Collections.list(dataset.enumerateAttributes());
+        attributes.add(new Attribute("y"));
 
         Instances trainSet = new Instances("trainSet", attributes, (int) (splitPercent * numberOfInstances));
         for (int i = 0; i < (int) (splitPercent * numberOfInstances); i++)
             trainSet.add(dataset.get(i));
+        trainSet.setClassIndex(numberOfAttributes - 1);
+
         Instances testSet = new Instances("testSet", attributes, (int) ((1 - splitPercent) * numberOfInstances));
         for (int i = (int) (splitPercent * numberOfInstances); i < numberOfInstances; i++)
             testSet.add(dataset.get(i));
+        testSet.setClassIndex(numberOfAttributes - 1);
 
         return Pair.of(trainSet, testSet);
     }
@@ -185,7 +190,7 @@ public class DatasetHelper
 
             // create data set
             dataset = new Instances("dataSet", attributes, numberOfInstances);
-            dataset.setClassIndex(attributes.size() - 1);
+            dataset.setClassIndex(numberOfAttributes);
 
             // create instance placeholder
             Instance instance = new DenseInstance(numberOfAttributes + 1);
@@ -230,9 +235,11 @@ public class DatasetHelper
         {
             int numberOfAttributes = datasets[0].numAttributes();
             int numberOfInstances = Arrays.stream(datasets).collect(Collectors.summingInt(Instances::size));
-            ArrayList<Attribute> attributes = createAttributes(numberOfAttributes);
+            ArrayList<Attribute> attributes = createAttributes(numberOfAttributes - 1);
 
             mergedSet = new Instances("mergedDataSet", attributes, numberOfInstances);
+            mergedSet.setClassIndex(numberOfAttributes - 1);
+
             Arrays.stream(datasets).forEach(mergedSet::addAll);
         }
 
