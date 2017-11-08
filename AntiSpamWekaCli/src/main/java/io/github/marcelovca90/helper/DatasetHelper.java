@@ -144,7 +144,7 @@ public class DatasetHelper
         int numberOfAttributes = dataset.numAttributes();
         int numberOfInstances = dataset.size();
         ArrayList<Attribute> attributes = Collections.list(dataset.enumerateAttributes());
-        attributes.add(new Attribute("y"));
+        attributes.add(new Attribute("y", Arrays.asList(ClassType.HAM.name(), ClassType.SPAM.name())));
 
         Instances trainSet = new Instances("trainSet", attributes, (int) (splitPercent * numberOfInstances));
         for (int i = 0; i < (int) (splitPercent * numberOfInstances); i++)
@@ -164,7 +164,7 @@ public class DatasetHelper
         ArrayList<Attribute> attributes = new ArrayList<>();
         for (long i = 0; i < featureAmount; i++)
             attributes.add(new Attribute("x" + i));
-        attributes.add(new Attribute("y"));
+        attributes.add(new Attribute("y", Arrays.asList(ClassType.HAM.name(), ClassType.SPAM.name())));
 
         return attributes;
     }
