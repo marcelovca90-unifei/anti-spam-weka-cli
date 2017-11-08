@@ -41,13 +41,15 @@ public class ValidationHelperTest
     private final ClassLoader classLoader = getClass().getClassLoader();
     private final DatasetHelper datasetHelper = new DatasetHelper();
     private final MethodHelper methodHelper = new MethodHelper();
+    private final Class<? extends AbstractClassifier> clazz = MultilayerPerceptron.class;
 
-    @InjectMocks
-    private ValidationHelper validationHelper;
     private AbstractClassifier classifier;
     private Instances trainSet;
     private Instances testSet;
     private TimedEvaluation evaluation;
+
+    @InjectMocks
+    private ValidationHelper validationHelper;
 
     @Test
     public void computeAndPrint_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception
@@ -57,8 +59,8 @@ public class ValidationHelperTest
         performTesting();
 
         // when
-        validationHelper.compute(MultilayerPerceptron.class, evaluation);
-        validationHelper.print(MultilayerPerceptron.class);
+        validationHelper.compute(clazz, evaluation);
+        validationHelper.print(clazz);
     }
 
     @Test
@@ -69,11 +71,11 @@ public class ValidationHelperTest
         {
             performTraining(i);
             performTesting();
-            validationHelper.compute(MultilayerPerceptron.class, evaluation);
+            validationHelper.compute(clazz, evaluation);
         }
 
         // when
-        validationHelper.print(MultilayerPerceptron.class);
+        validationHelper.print(clazz);
     }
 
     private void performTraining(int seed) throws Exception
