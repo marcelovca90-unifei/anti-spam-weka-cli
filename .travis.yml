@@ -7,7 +7,7 @@ os:
   - linux
 
 before_script:
-  - cd AntiSpamWekaCli
+  - cd AntiSpamWekaCLI
 
 script:
   - mvn clean install
