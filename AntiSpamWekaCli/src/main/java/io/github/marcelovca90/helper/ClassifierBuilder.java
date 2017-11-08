@@ -25,13 +25,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
 import weka.core.Utils;
 
-public class MethodHelper
+public class ClassifierBuilder
 {
-    private static final Logger LOGGER = LogManager.getLogger(MethodHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(ClassifierBuilder.class);
 
-    public AbstractClassifier build(String className, String options)
+    private String className;
+    private String options;
+
+    public ClassifierBuilder withClassName(String className)
+    {
+        this.className = className;
+        return this;
+    }
+
+    public ClassifierBuilder withOptions(String options)
+    {
+        this.options = options;
+        return this;
+    }
+
+    public Classifier build()
     {
         AbstractClassifier classifier = null;
 

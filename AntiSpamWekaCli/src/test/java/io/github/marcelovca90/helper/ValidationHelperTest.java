@@ -31,7 +31,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.common.TimedEvaluation;
-import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
@@ -40,10 +40,9 @@ public class ValidationHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
     private final DatasetHelper datasetHelper = new DatasetHelper();
-    private final MethodHelper methodHelper = new MethodHelper();
-    private final Class<? extends AbstractClassifier> clazz = MultilayerPerceptron.class;
+    private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
-    private AbstractClassifier classifier;
+    private Classifier classifier;
     private Instances trainSet;
     private Instances testSet;
     private TimedEvaluation evaluation;
@@ -59,8 +58,8 @@ public class ValidationHelperTest
         performTesting();
 
         // when
-        validationHelper.compute(clazz, evaluation);
-        validationHelper.print(clazz);
+        validationHelper.compute(MultilayerPerceptron.class, evaluation);
+        validationHelper.print(MultilayerPerceptron.class);
     }
 
     @Test
@@ -71,11 +70,11 @@ public class ValidationHelperTest
         {
             performTraining(i);
             performTesting();
-            validationHelper.compute(clazz, evaluation);
+            validationHelper.compute(MultilayerPerceptron.class, evaluation);
         }
 
         // when
-        validationHelper.print(clazz);
+        validationHelper.print(MultilayerPerceptron.class);
     }
 
     private void performTraining(int seed) throws Exception
@@ -90,7 +89,7 @@ public class ValidationHelperTest
 
         String className = "weka.classifiers.functions.MultilayerPerceptron";
         String options = "-L 0.3 -M 0.2 -N 100 -V 33 -S 1 -E 20 -H a";
-        classifier = methodHelper.build(className, options);
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
         classifier.buildClassifier(trainSet);
     }

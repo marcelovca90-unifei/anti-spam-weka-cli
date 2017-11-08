@@ -30,17 +30,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
 
 @RunWith (MockitoJUnitRunner.class)
-public class MethodHelperTest
+public class ClassifierBuilderTest
 {
     private String className;
     private String options;
-    private AbstractClassifier classifier;
+    private Classifier classifier;
 
     @InjectMocks
-    private MethodHelper methodHelper;
+    private ClassifierBuilder classifierBuilder;
 
     @Test
     public void build_unknownClassValidOptions_shouldReturnNullClassifier()
@@ -50,7 +50,7 @@ public class MethodHelperTest
         options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
 
         // when
-        classifier = methodHelper.build(className, options);
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
         // then
         assertThat(classifier, nullValue());
@@ -64,7 +64,7 @@ public class MethodHelperTest
         options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
 
         // when
-        classifier = methodHelper.build(className, options);
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
         // then
         assertThat(classifier, nullValue());
@@ -78,11 +78,10 @@ public class MethodHelperTest
         options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a -FOO bar";
 
         // when
-        classifier = methodHelper.build(className, options);
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
         // then
         assertThat(classifier, notNullValue());
-        assertThat(classifier.getOptions(), notNullValue());
     }
 
     @Test
@@ -93,10 +92,9 @@ public class MethodHelperTest
         options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
 
         // when
-        classifier = methodHelper.build(className, options);
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
         // then
         assertThat(classifier, notNullValue());
-        assertThat(classifier.getOptions(), notNullValue());
     }
 }
