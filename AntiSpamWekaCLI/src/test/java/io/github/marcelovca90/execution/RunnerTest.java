@@ -23,12 +23,10 @@ package io.github.marcelovca90.execution;
 
 import org.junit.Test;
 
-import io.github.marcelovca90.execution.Runner;
-
 public class RunnerTest
 {
     @Test
-    public void main()
+    public void main() throws Exception
     {
         Runner.main(new String[0]);
     }
