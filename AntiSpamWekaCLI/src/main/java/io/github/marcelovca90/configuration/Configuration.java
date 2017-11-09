@@ -31,7 +31,7 @@ public class Configuration
 {
     // anti spam settings
     private String metadataPath;
-    private List<Pair<Class<?>, String>> classNamesAndOptions;
+    private List<Pair<String, String>> classNamesAndOptions;
     private int runs;
 
     // run settings
@@ -64,12 +64,12 @@ public class Configuration
         this.metadataPath = metadataPath;
     }
 
-    public List<Pair<Class<?>, String>> getClassNamesAndOptions()
+    public List<Pair<String, String>> getClassNamesAndOptions()
     {
         return classNamesAndOptions;
     }
 
-    public void setClassNamesAndOptions(List<Pair<Class<?>, String>> classNamesAndOptions)
+    public void setClassNamesAndOptions(List<Pair<String, String>> classNamesAndOptions)
     {
         this.classNamesAndOptions = classNamesAndOptions;
     }

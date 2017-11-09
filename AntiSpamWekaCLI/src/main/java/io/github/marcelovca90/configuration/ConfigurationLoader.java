@@ -15,11 +15,16 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.mail.CryptoProtocol;
 
-public class ConfigurationHelper
+public class ConfigurationLoader
 {
-    private static final Logger LOGGER = LogManager.getLogger(ConfigurationHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConfigurationLoader.class);
 
-    public Configuration load(String filename)
+    public Configuration load()
+    {
+        return load("run.properties");
+    }
+
+    protected Configuration load(String filename)
     {
         Configuration config = new Configuration();
         Properties prop = new Properties();
@@ -58,18 +63,13 @@ public class ConfigurationHelper
             LOGGER.error("Could not read configuration file.", e);
             config = null;
         }
-        catch (ClassNotFoundException e)
-        {
-            LOGGER.error("Could not find one or more classes.", e);
-            config = null;
-        }
 
         return config;
     }
 
-    private List<Pair<Class<?>, String>> loadClassNamesAndOptions(Properties prop) throws ClassNotFoundException, IOException
+    private List<Pair<String, String>> loadClassNamesAndOptions(Properties prop) throws IOException
     {
-        List<Pair<Class<?>, String>> classNamesAndOptions = new ArrayList<>();
+        List<Pair<String, String>> classNamesAndOptions = new ArrayList<>();
 
         long classNameCount = prop.keySet().stream().filter(k -> ((String) k).startsWith("className")).count();
         long optionsCount = prop.keySet().stream().filter(k -> ((String) k).startsWith("options")).count();
@@ -80,8 +80,7 @@ public class ConfigurationHelper
             {
                 String className = prop.getProperty("className" + i).replaceAll("^\"|\"$", "");
                 String options = prop.getProperty("options" + i).replaceAll("^\"|\"$", "");
-                Class<?> clazz = Class.forName(className);
-                classNamesAndOptions.add(Pair.of(clazz, options));
+                classNamesAndOptions.add(Pair.of(className, options));
             }
         }
         else
