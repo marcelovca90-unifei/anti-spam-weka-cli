@@ -21,10 +21,12 @@
  ******************************************************************************/
 package io.github.marcelovca90.evaluation;
 
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -32,10 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.data.DataHelper;
-import io.github.marcelovca90.evaluation.TimedEvaluation;
-import io.github.marcelovca90.evaluation.EvaluationHelper;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 @RunWith (MockitoJUnitRunner.class)
@@ -45,59 +44,68 @@ public class EvaluationHelperTest
     private final DataHelper dataHelper = new DataHelper();
     private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
-    private Classifier classifier;
+    private Instances dataset;
     private Instances trainSet;
     private Instances testSet;
+    private Classifier classifier;
     private TimedEvaluation evaluation;
 
     @InjectMocks
     private EvaluationHelper evaluationHelper;
 
     @Test
-    public void computeAndPrint_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception
+    public void computePrintSummarize_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception
     {
         // given
-        performTraining(0);
-        performTesting();
+        performTraining(dataset);
+        performTesting(dataset);
 
         // when
-        evaluationHelper.compute(MultilayerPerceptron.class, evaluation);
-        evaluationHelper.print(MultilayerPerceptron.class);
+        evaluationHelper.compute(classifier, evaluation);
+        evaluationHelper.print(classifier);
+        evaluationHelper.summarize(classifier);
     }
 
     @Test
-    public void computeAndPrint_multipleExecutions_shouldPrintNonZeroConfidenceInterval() throws Exception
+    public void computePrintSummarize_multipleExecutions_shouldPrintNonZeroConfidenceInterval() throws Exception
     {
         // given
         for (int i = 0; i < 3; i++)
         {
-            performTraining(i);
-            performTesting();
-            evaluationHelper.compute(MultilayerPerceptron.class, evaluation);
+            dataHelper.shuffle(dataset, i);
+            Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
+            trainSet = datasets.getLeft();
+            testSet = datasets.getRight();
+
+            performTraining(trainSet);
+            performTesting(testSet);
+
+            evaluationHelper.compute(classifier, evaluation);
+            evaluationHelper.print(classifier);
         }
 
         // when
-        evaluationHelper.print(MultilayerPerceptron.class);
+        evaluationHelper.summarize(classifier);
     }
 
-    private void performTraining(int seed) throws Exception
+    @Before
+    public void setUp() throws URISyntaxException
     {
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
-        dataHelper.shuffle(dataset, seed);
-        Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
-        trainSet = datasets.getLeft();
-        testSet = datasets.getRight();
+        dataset = dataHelper.loadDataset(metadatum, false);
 
         String className = "weka.classifiers.functions.MultilayerPerceptron";
         String options = "-L 0.3 -M 0.2 -N 100 -V 33 -S 1 -E 20 -H a";
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+    }
 
+    private void performTraining(Instances trainSet) throws Exception
+    {
         classifier.buildClassifier(trainSet);
     }
 
-    private void performTesting() throws Exception
+    private void performTesting(Instances testSet) throws Exception
     {
         evaluation = new TimedEvaluation(testSet);
         evaluation.evaluateModel(classifier, testSet);

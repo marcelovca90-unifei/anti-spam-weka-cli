@@ -33,53 +33,60 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.data.ClassType;
-import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Classifier;
 
 public class EvaluationHelper
 {
     private static final Logger LOGGER = LogManager.getLogger(EvaluationHelper.class);
-    private static final Map<Class<? extends AbstractClassifier>, Map<String, DescriptiveStatistics>> RESULTS = new HashMap<>();
+    private static final Map<Classifier, Map<String, DescriptiveStatistics>> RESULTS = new HashMap<>();
 
-    public void compute(Class<? extends AbstractClassifier> clazz, TimedEvaluation evaluation)
+    public void compute(Classifier classifier, TimedEvaluation evaluation)
     {
         int hamIndex = ClassType.HAM.ordinal();
         int spamIndex = ClassType.SPAM.ordinal();
 
-        aggregate(clazz, "hamPrecision", 100.0 * evaluation.precision(hamIndex));
-        aggregate(clazz, "spamPrecision", 100.0 * evaluation.precision(spamIndex));
-        aggregate(clazz, "weightedPrecision", 100.0 * evaluation.weightedPrecision());
+        aggregate(classifier, "hamPrecision", 100.0 * evaluation.precision(hamIndex));
+        aggregate(classifier, "spamPrecision", 100.0 * evaluation.precision(spamIndex));
+        aggregate(classifier, "weightedPrecision", 100.0 * evaluation.weightedPrecision());
 
-        aggregate(clazz, "hamRecall", 100.0 * evaluation.recall(hamIndex));
-        aggregate(clazz, "spamRecall", 100.0 * evaluation.recall(spamIndex));
-        aggregate(clazz, "weightedRecall", 100.0 * evaluation.weightedRecall());
+        aggregate(classifier, "hamRecall", 100.0 * evaluation.recall(hamIndex));
+        aggregate(classifier, "spamRecall", 100.0 * evaluation.recall(spamIndex));
+        aggregate(classifier, "weightedRecall", 100.0 * evaluation.weightedRecall());
 
-        aggregate(clazz, "hamAreaUnderPRC", 100.0 * evaluation.areaUnderPRC(hamIndex));
-        aggregate(clazz, "spamAreaUnderPRC", 100.0 * evaluation.areaUnderPRC(spamIndex));
-        aggregate(clazz, "weightedAreaUnderPRC", 100.0 * evaluation.weightedAreaUnderPRC());
+        aggregate(classifier, "hamAreaUnderPRC", 100.0 * evaluation.areaUnderPRC(hamIndex));
+        aggregate(classifier, "spamAreaUnderPRC", 100.0 * evaluation.areaUnderPRC(spamIndex));
+        aggregate(classifier, "weightedAreaUnderPRC", 100.0 * evaluation.weightedAreaUnderPRC());
 
-        aggregate(clazz, "hamAreaUnderROC", 100.0 * evaluation.areaUnderROC(hamIndex));
-        aggregate(clazz, "spamAreaUnderROC", 100.0 * evaluation.areaUnderROC(spamIndex));
-        aggregate(clazz, "weightedAreaUnderROC", 100.0 * evaluation.weightedAreaUnderROC());
+        aggregate(classifier, "hamAreaUnderROC", 100.0 * evaluation.areaUnderROC(hamIndex));
+        aggregate(classifier, "spamAreaUnderROC", 100.0 * evaluation.areaUnderROC(spamIndex));
+        aggregate(classifier, "weightedAreaUnderROC", 100.0 * evaluation.weightedAreaUnderROC());
 
-        aggregate(clazz, "hamFMeasure", 100.0 * evaluation.fMeasure(hamIndex));
-        aggregate(clazz, "spamFMeasure", 100.0 * evaluation.fMeasure(spamIndex));
-        aggregate(clazz, "weightedFMeasure", 100.0 * evaluation.weightedFMeasure());
+        aggregate(classifier, "hamFMeasure", 100.0 * evaluation.fMeasure(hamIndex));
+        aggregate(classifier, "spamFMeasure", 100.0 * evaluation.fMeasure(spamIndex));
+        aggregate(classifier, "weightedFMeasure", 100.0 * evaluation.weightedFMeasure());
 
-        aggregate(clazz, "trainingTime", evaluation.trainingTime());
-        aggregate(clazz, "testingTime", evaluation.testingTime());
+        aggregate(classifier, "trainingTime", evaluation.trainingTime());
+        aggregate(classifier, "testingTime", evaluation.testingTime());
     }
 
-    public void print(Class<? extends AbstractClassifier> clazz)
+    public void print(Classifier classifier)
     {
-        LOGGER.info(RESULTS.get(clazz).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
-        LOGGER.info(RESULTS.get(clazz).values().stream().map(v -> String.format("%.2f ± %.2f", v.getMean(), confidenceInterval(v, 0.05))).collect(Collectors.joining("\t")));
+        if (RESULTS.get(classifier).values().stream().allMatch(stat -> stat.getN() == 1))
+            LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
+        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f", v.getValues()[(int) v.getN() - 1])).collect(Collectors.joining("\t")));
     }
 
-    private void aggregate(Class<? extends AbstractClassifier> clazz, String metric, double value)
+    public void summarize(Classifier classifier)
     {
-        RESULTS.putIfAbsent(clazz, new LinkedHashMap<>());
-        RESULTS.get(clazz).putIfAbsent(metric, new DescriptiveStatistics());
-        RESULTS.get(clazz).get(metric).addValue(value);
+        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
+        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f ± %.2f", v.getMean(), confidenceInterval(v, 0.05))).collect(Collectors.joining("\t")));
+    }
+
+    private void aggregate(Classifier classifier, String metric, double value)
+    {
+        RESULTS.putIfAbsent(classifier, new LinkedHashMap<>());
+        RESULTS.get(classifier).putIfAbsent(metric, new DescriptiveStatistics());
+        RESULTS.get(classifier).get(metric).addValue(value);
     }
 
     private double confidenceInterval(DescriptiveStatistics statistics, double significance)
