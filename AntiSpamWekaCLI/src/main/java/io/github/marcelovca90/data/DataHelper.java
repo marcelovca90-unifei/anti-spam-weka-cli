@@ -123,6 +123,21 @@ public class DataHelper
         return dataset;
     }
 
+    public void balance(Instances dataset, int seed)
+    {
+        Random random = new Random(seed);
+
+        int hamCount = (int) dataset.stream().filter(i -> i.classValue() == ClassType.HAM.ordinal()).count();
+        int spamCount = (int) dataset.stream().filter(i -> i.classValue() == ClassType.SPAM.ordinal()).count();
+
+        if (hamCount < spamCount)
+            for (int i = 0; i < spamCount - hamCount; i++)
+                dataset.add(dataset.get(random.nextInt(hamCount)));
+        else if (spamCount < hamCount)
+            for (int i = 0; i < hamCount - spamCount; i++)
+            dataset.add(dataset.get(hamCount + random.nextInt(spamCount)));
+    }
+
     public void shuffle(Instances dataset, int seed)
     {
         Random random = new Random(seed);

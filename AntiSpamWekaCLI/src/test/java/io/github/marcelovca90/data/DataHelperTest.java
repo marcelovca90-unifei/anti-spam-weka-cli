@@ -205,6 +205,32 @@ public class DataHelperTest
     }
 
     @Test
+    public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
+    {
+        // given
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        int hamCountBefore = count(dataset, ClassType.HAM);
+        int spamCountBefore = count(dataset, ClassType.SPAM);
+
+        // when
+        dataHelper.balance(dataset, 0);
+
+        // then
+        assertThat(dataset, notNullValue());
+        int hamCountAfter = count(dataset, ClassType.HAM);
+        int spamCountAfter = count(dataset, ClassType.SPAM);
+        assertThat(hamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
+        assertThat(spamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
+    }
+
+    private int count(Instances dataset, ClassType classType)
+    {
+        return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
+    }
+
+    @Test
     public void shuffle_firstElementMustHaveChanged() throws URISyntaxException
     {
         // given
