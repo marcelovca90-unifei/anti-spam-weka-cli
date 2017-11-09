@@ -47,24 +47,24 @@ public class TimedEvaluation extends Evaluation
         this.testEnd = testEnd;
     }
 
-    public void setTrainStart(long trainStart)
+    public void markTrainStart()
     {
-        this.trainStart = trainStart;
+        this.trainStart = System.currentTimeMillis();
     }
 
-    public void setTrainEnd(long trainEnd)
+    public void markTrainEnd()
     {
-        this.trainEnd = trainEnd;
+        this.trainEnd = System.currentTimeMillis();
     }
 
-    public void setTestStart(long testStart)
+    public void markTestStart()
     {
-        this.testStart = testStart;
+        this.testStart = System.currentTimeMillis();
     }
 
-    public void setTestEnd(long testEnd)
+    public void markTestEnd()
     {
-        this.testEnd = testEnd;
+        this.testEnd = System.currentTimeMillis();
     }
 
     public long trainingTime()

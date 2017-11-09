@@ -64,20 +64,28 @@ public class Runner
 
                 for (int run = 0; run < config.getRuns(); run++)
                 {
+                    // balance
+                    dataHelper.balance(dataset, run);
+
                     // shuffle
                     dataHelper.shuffle(dataset, run);
 
                     // split
                     Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
+                    Instances trainSet = datasets.getLeft();
+                    Instances testSet = datasets.getRight();
+
+                    TimedEvaluation evaluation = new TimedEvaluation(testSet);
 
                     // train
-                    Instances trainSet = datasets.getLeft();
+                    evaluation.markTrainStart();
                     classifier.buildClassifier(trainSet);
+                    evaluation.markTrainEnd();
 
                     // test
-                    Instances testSet = datasets.getRight();
-                    TimedEvaluation evaluation = new TimedEvaluation(testSet);
+                    evaluation.markTestStart();
                     evaluation.evaluateModel(classifier, testSet);
+                    evaluation.markTestEnd();
 
                     // evaluate
                     evaluationHelper.compute(classifier, evaluation);
