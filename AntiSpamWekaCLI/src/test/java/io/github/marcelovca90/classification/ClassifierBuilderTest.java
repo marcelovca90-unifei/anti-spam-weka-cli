@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.github.marcelovca90.classification.ClassifierBuilder;
 import weka.classifiers.Classifier;
 
 @RunWith (MockitoJUnitRunner.class)
@@ -48,7 +47,7 @@ public class ClassifierBuilderTest
     {
         // given
         className = "weka.classifiers.functions.SingleLayerPerceptron";
-        options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
+        options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
@@ -62,7 +61,7 @@ public class ClassifierBuilderTest
     {
         // given
         className = "weka.classifiers.AbstractClassifier";
-        options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
+        options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
@@ -75,8 +74,8 @@ public class ClassifierBuilderTest
     public void build_validClassInvalidOptions_shouldReturnNullClassifier()
     {
         // given
-        className = "weka.classifiers.functions.MultilayerPerceptron";
-        options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a -FOO bar";
+        className = "weka.classifiers.functions.VotedPerceptron";
+        options = "-I 1 -E 1.0 -S 1 -M 10000 -FOO bar";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
@@ -89,8 +88,8 @@ public class ClassifierBuilderTest
     public void build_validClassValidOptions_shouldReturnNotNullClassifier()
     {
         // given
-        className = "weka.classifiers.functions.MultilayerPerceptron";
-        options = "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a";
+        String className = "weka.classifiers.functions.VotedPerceptron";
+        String options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
