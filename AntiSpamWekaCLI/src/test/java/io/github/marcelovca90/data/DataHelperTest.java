@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
@@ -38,7 +39,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -244,7 +244,7 @@ public class DataHelperTest
 
         // then
         assertThat(filteredDataset, notNullValue());
-        assertThat(filteredDataset.numAttributes(), Matchers.lessThan(dataset.numAttributes()));
+        assertThat(filteredDataset.numAttributes(), lessThan(dataset.numAttributes()));
     }
 
     @Test
