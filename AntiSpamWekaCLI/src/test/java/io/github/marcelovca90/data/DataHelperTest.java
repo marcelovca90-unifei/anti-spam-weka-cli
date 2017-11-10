@@ -38,6 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -46,7 +47,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import weka.core.Instance;
 import weka.core.Instances;
 
-@RunWith (MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DataHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
@@ -228,6 +229,32 @@ public class DataHelperTest
     private int count(Instances dataset, ClassType classType)
     {
         return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
+    }
+
+    @Test
+    public void selectAttributes_withValidDataset_shouldReturnFilteredDataset() throws URISyntaxException
+    {
+        // given
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
+        Instances dataset = dataHelper.loadDataset(metadatum, false);
+
+        // when
+        Instances filteredDataset = dataHelper.selectAttributes(dataset);
+
+        // then
+        assertThat(filteredDataset, notNullValue());
+        assertThat(filteredDataset.numAttributes(), Matchers.lessThan(dataset.numAttributes()));
+    }
+
+    @Test
+    public void selectAttributes_withInvalidDataset_shouldReturnNull() throws URISyntaxException
+    {
+        // when
+        Instances filteredDataset = dataHelper.selectAttributes(null);
+
+        // then
+        assertThat(filteredDataset, nullValue());
     }
 
     @Test
