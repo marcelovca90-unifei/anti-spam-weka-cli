@@ -48,11 +48,19 @@ import org.apache.logging.log4j.Logger;
 
 import com.arturmkrtchyan.sizeof4j.SizeOf;
 
+import weka.attributeSelection.ASEvaluation;
+import weka.attributeSelection.ASSearch;
+import weka.attributeSelection.CfsSubsetEval;
+import weka.attributeSelection.MultiObjectiveEvolutionarySearch;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.OptionHandler;
+import weka.core.Utils;
 import weka.core.converters.ArffLoader.ArffReader;
+import weka.filters.Filter;
+import weka.filters.supervised.attribute.AttributeSelection;
 
 public class DataHelper
 {
@@ -136,6 +144,37 @@ public class DataHelper
         else if (spamCount < hamCount)
             for (int i = 0; i < hamCount - spamCount; i++)
             dataset.add(dataset.get(hamCount + random.nextInt(spamCount)));
+    }
+
+    public Instances selectAttributes(Instances dataset)
+    {
+        int noCores = Runtime.getRuntime().availableProcessors();
+        String evaluationOptions = String.format("-Z -P %d -E %d", noCores, noCores);
+        String searchOptions = "-generations 10 -population-size 100 -seed 1 -a 0";
+        Filter filter = null;
+        Instances filteredDataset = null;
+
+        try
+        {
+            ASEvaluation evaluator = new CfsSubsetEval();
+            ((OptionHandler) evaluator).setOptions(Utils.splitOptions(evaluationOptions));
+
+            ASSearch search = new MultiObjectiveEvolutionarySearch();
+            ((OptionHandler) search).setOptions(Utils.splitOptions(searchOptions));
+
+            filter = new AttributeSelection();
+            filter.setInputFormat(dataset);
+            ((AttributeSelection) filter).setEvaluator(evaluator);
+            ((AttributeSelection) filter).setSearch(search);
+
+            filteredDataset = Filter.useFilter(dataset, filter);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Unable to create attribute selection filter.", e);
+        }
+
+        return filteredDataset;
     }
 
     public void shuffle(Instances dataset, int seed)

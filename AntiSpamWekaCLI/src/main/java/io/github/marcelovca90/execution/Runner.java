@@ -68,6 +68,9 @@ public class Runner
                     // shuffle
                     dataHelper.shuffle(dataset, run);
 
+                    // select attributes
+                    dataset = dataHelper.selectAttributes(dataset);
+
                     // split
                     Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
                     Instances trainSet = datasets.getLeft();
