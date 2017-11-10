@@ -30,7 +30,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
@@ -38,7 +37,7 @@ import io.github.marcelovca90.data.DataHelper;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-@RunWith (MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class EvaluationHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
@@ -50,9 +49,6 @@ public class EvaluationHelperTest
     private Instances testSet;
     private Classifier classifier;
     private TimedEvaluation evaluation;
-
-    @Mock
-    private Classifier classifierMock;
 
     @InjectMocks
     private EvaluationHelper evaluationHelper;
