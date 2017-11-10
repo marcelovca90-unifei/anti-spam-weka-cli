@@ -25,8 +25,6 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
@@ -39,8 +37,6 @@ import weka.core.Instances;
 
 public class Runner
 {
-    private static final Logger LOGGER = LogManager.getLogger(Runner.class);
-
     private static final ConfigurationLoader configLoader = new ConfigurationLoader();
     private static final DataHelper dataHelper = new DataHelper();
     private static final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
@@ -61,6 +57,8 @@ public class Runner
                 String options = classNameAndOptions.getRight();
 
                 Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+
+                evaluationHelper.addAppender(classifier);
 
                 for (int run = 0; run < config.getRuns(); run++)
                 {
@@ -91,7 +89,9 @@ public class Runner
                     evaluationHelper.compute(classifier, evaluation);
                     evaluationHelper.print(classifier);
                 }
+
                 evaluationHelper.summarize(classifier);
+                evaluationHelper.removeAppender(classifier);
             }
         }
     }

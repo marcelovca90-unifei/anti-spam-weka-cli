@@ -31,6 +31,8 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.appender.FileAppender;
 
 import io.github.marcelovca90.data.ClassType;
 import weka.classifiers.Classifier;
@@ -39,6 +41,27 @@ public class EvaluationHelper
 {
     private static final Logger LOGGER = LogManager.getLogger(EvaluationHelper.class);
     private static final Map<Classifier, Map<String, DescriptiveStatistics>> RESULTS = new HashMap<>();
+    private static final Map<Classifier, Appender> APPENDERS = new HashMap<>();
+
+    public void addAppender(Classifier classifier)
+    {
+        String simpleName = classifier.getClass().getSimpleName();
+        String loggerName = "logs/" + simpleName + ".log";
+
+        if (!APPENDERS.containsKey(classifier))
+        {
+            Appender appender = FileAppender.newBuilder().withFileName(loggerName).withName(simpleName).build();
+            ((org.apache.logging.log4j.core.Logger) LOGGER).addAppender(appender);
+            APPENDERS.put(classifier, appender);
+        }
+    }
+
+    public void removeAppender(Classifier classifier)
+    {
+        Appender appender = APPENDERS.get(classifier);
+        ((org.apache.logging.log4j.core.Logger) LOGGER).removeAppender(appender);
+        APPENDERS.remove(classifier);
+    }
 
     public void compute(Classifier classifier, TimedEvaluation evaluation)
     {

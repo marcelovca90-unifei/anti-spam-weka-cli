@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
@@ -50,8 +51,23 @@ public class EvaluationHelperTest
     private Classifier classifier;
     private TimedEvaluation evaluation;
 
+    @Mock
+    private Classifier classifierMock;
+
     @InjectMocks
     private EvaluationHelper evaluationHelper;
+
+    @Before
+    public void setUp() throws URISyntaxException
+    {
+        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
+        dataset = dataHelper.loadDataset(metadatum, false);
+
+        String className = "weka.classifiers.functions.VotedPerceptron";
+        String options = "-I 1 -E 1.0 -S 1 -M 10000";
+        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+    }
 
     @Test
     public void computePrintSummarize_singleExecution_shouldPrintZeroConfidenceInterval() throws Exception
@@ -61,9 +77,11 @@ public class EvaluationHelperTest
         performTesting(dataset);
 
         // when
+        evaluationHelper.addAppender(classifier);
         evaluationHelper.compute(classifier, evaluation);
         evaluationHelper.print(classifier);
         evaluationHelper.summarize(classifier);
+        evaluationHelper.removeAppender(classifier);
     }
 
     @Test
@@ -80,24 +98,14 @@ public class EvaluationHelperTest
             performTraining(trainSet);
             performTesting(testSet);
 
+            // when
+            evaluationHelper.addAppender(classifier);
             evaluationHelper.compute(classifier, evaluation);
             evaluationHelper.print(classifier);
         }
 
-        // when
         evaluationHelper.summarize(classifier);
-    }
-
-    @Before
-    public void setUp() throws URISyntaxException
-    {
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        dataset = dataHelper.loadDataset(metadatum, false);
-
-        String className = "weka.classifiers.functions.MultilayerPerceptron";
-        String options = "-L 0.3 -M 0.2 -N 100 -V 33 -S 1 -E 20 -H a";
-        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+        evaluationHelper.removeAppender(classifier);
     }
 
     private void performTraining(Instances trainSet) throws Exception
