@@ -8,7 +8,7 @@ public class DatasetMetadata
     private String folder;
     private String arffFilename;
     private String name;
-    private String method;
+    private String featureSelecion;
     private int noFeaturesBefore;
     private int noFeaturesAfter;
     private int emptyHamAmount;
@@ -29,9 +29,9 @@ public class DatasetMetadata
         return name;
     }
 
-    public String getMethod()
+    public String getFeatureSelecion()
     {
-        return method;
+        return featureSelecion;
     }
 
     public int getNoFeaturesBefore()
@@ -68,7 +68,7 @@ public class DatasetMetadata
 
         String[] parts = folder.split(Pattern.quote(File.separator));
         this.name = parts[parts.length - 3];
-        this.method = parts[parts.length - 2];
+        this.featureSelecion = parts[parts.length - 2];
         this.noFeaturesBefore = Integer.parseInt(parts[parts.length - 1]);
         this.noFeaturesAfter = Integer.MIN_VALUE;
     }

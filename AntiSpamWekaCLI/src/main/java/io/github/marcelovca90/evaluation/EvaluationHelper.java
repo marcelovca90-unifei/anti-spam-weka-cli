@@ -24,9 +24,11 @@ package io.github.marcelovca90.evaluation;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
@@ -98,14 +100,42 @@ public class EvaluationHelper
     public void print(DatasetMetadata metadata, Classifier classifier)
     {
         if (RESULTS.get(classifier).values().stream().allMatch(stat -> stat.getN() == 1))
-            LOGGER.info(buildHeaderPrefix() + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
-        LOGGER.info(buildBodyPrefix(metadata) + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f", v.getValues()[(int) v.getN() - 1])).collect(Collectors.joining("\t")));
+        {
+            LOGGER.info(
+                buildHeaderPrefix(classifier) + "\t" + RESULTS
+                    .get(classifier)
+                    .keySet()
+                    .stream()
+                    .map(k -> StringUtils.rightPad(k, 15))
+                    .collect(Collectors.joining("\t")));
+        }
+
+        LOGGER.info(
+            buildBodyPrefix(metadata, classifier) + "\t" + RESULTS
+                .get(classifier)
+                .entrySet()
+                .stream()
+                .map(this::formatSingleOutput)
+                .collect(Collectors.joining("\t")));
     }
 
     public void summarize(DatasetMetadata metadata, Classifier classifier)
     {
-        LOGGER.info(buildHeaderPrefix() + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
-        LOGGER.info(buildBodyPrefix(metadata) + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f ± %.2f", v.getMean(), confidenceInterval(v, 0.05))).collect(Collectors.joining("\t")));
+        LOGGER.info(
+            buildHeaderPrefix(classifier) + "\t" + RESULTS
+                .get(classifier)
+                .keySet()
+                .stream()
+                .map(k -> StringUtils.rightPad(k, 15))
+                .collect(Collectors.joining("\t")));
+
+        LOGGER.info(
+            buildBodyPrefix(metadata, classifier) + "\t" + RESULTS
+                .get(classifier)
+                .entrySet()
+                .stream()
+                .map(this::formatCompositeOutput)
+                .collect(Collectors.joining("\t")));
     }
 
     private void aggregate(Classifier classifier, String metric, double value)
@@ -114,15 +144,15 @@ public class EvaluationHelper
         RESULTS.get(classifier).putIfAbsent(metric, new DescriptiveStatistics());
         RESULTS.get(classifier).get(metric).addValue(value);
     }
-    
-    private String buildHeaderPrefix()
+
+    private String buildHeaderPrefix(Classifier classifier)
     {
-        return String.format("%s\t%s\t%s\t%s\t", "name", "method", "noFeaturesBefore", "noFeaturesAfter");
+        return String.format("%s\t%s\t%s\t%s\t%s", "name", "featureSelection", "noFeaturesBefore", "noFeaturesAfter", "classifier");
     }
-    
-    private String buildBodyPrefix(DatasetMetadata metadata)
+
+    private String buildBodyPrefix(DatasetMetadata metadata, Classifier classifier)
     {
-        return String.format("%s\t%s\t%d\t%d\t", metadata.getName(), metadata.getMethod(), metadata.getNoFeaturesBefore(), metadata.getNoFeaturesBefore());
+        return String.format("%s\t%s\t%d\t%d\t%s", metadata.getName(), metadata.getFeatureSelecion(), metadata.getNoFeaturesBefore(), metadata.getNoFeaturesBefore(), classifier.getClass().getSimpleName());
     }
 
     private double confidenceInterval(DescriptiveStatistics statistics, double significance)
@@ -133,5 +163,30 @@ public class EvaluationHelper
         TDistribution tDist = new TDistribution(statistics.getN() - 1);
         double a = tDist.inverseCumulativeProbability(1.0 - significance / 2);
         return a * statistics.getStandardDeviation() / Math.sqrt(statistics.getN());
+    }
+
+    private String formatMillis(double millis)
+    {
+        return DurationFormatUtils.formatDurationHMS((Double.valueOf(Math.abs(millis))).longValue());
+    }
+
+    private String formatSingleOutput(Entry<String, DescriptiveStatistics> entry)
+    {
+        int lastIndex = (int) entry.getValue().getN() - 1;
+        double lastValue = entry.getValue().getValues()[lastIndex];
+        if (entry.getKey().endsWith("Time"))
+            return String.format("%s", formatMillis(lastValue));
+        else
+            return String.format("%.2f", lastValue);
+    }
+
+    private String formatCompositeOutput(Entry<String, DescriptiveStatistics> entry)
+    {
+        double mean = entry.getValue().getMean();
+        double confInterval = confidenceInterval(entry.getValue(), 0.05);
+        if (entry.getKey().endsWith("Time"))
+            return String.format("%s ± %s", formatMillis(mean), formatMillis(confInterval));
+        else
+            return String.format("%.2f ± %.2f", mean, confInterval);
     }
 }
