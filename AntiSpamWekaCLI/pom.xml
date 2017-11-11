@@ -24,7 +24,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>io.github.marcelovca90.runner.Runner</mainClass>
+                            <mainClass>io.github.marcelovca90.execution.Runner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
