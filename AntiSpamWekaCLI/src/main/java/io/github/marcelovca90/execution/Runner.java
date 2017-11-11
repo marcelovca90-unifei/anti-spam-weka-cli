@@ -29,7 +29,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
 import io.github.marcelovca90.configuration.ConfigurationLoader;
-import io.github.marcelovca90.data.DataHelper;
+import io.github.marcelovca90.data.DatasetHelper;
 import io.github.marcelovca90.evaluation.EvaluationHelper;
 import io.github.marcelovca90.evaluation.TimedEvaluation;
 import weka.classifiers.Classifier;
@@ -38,18 +38,18 @@ import weka.core.Instances;
 public class Runner
 {
     private static final ConfigurationLoader configLoader = new ConfigurationLoader();
-    private static final DataHelper dataHelper = new DataHelper();
+    private static final DatasetHelper datasetHelper = new DatasetHelper();
     private static final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
     private static final EvaluationHelper evaluationHelper = new EvaluationHelper();
 
     public static void main(String[] args) throws Exception
     {
         Configuration config = configLoader.load();
-        Set<Triple<String, Integer, Integer>> metadata = dataHelper.loadMetadata(config.getMetadataPath());
+        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(config.getMetadataPath());
 
         for (Triple<String, Integer, Integer> metadatum : metadata)
         {
-            Instances dataset = dataHelper.loadDataset(metadatum, false);
+            Instances dataset = datasetHelper.loadDataset(metadatum, false);
 
             for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
             {
@@ -63,16 +63,16 @@ public class Runner
                 for (int run = 0; run < config.getRuns(); run++)
                 {
                     // select attributes
-                    dataset = dataHelper.selectAttributes(dataset);
+                    dataset = datasetHelper.selectAttributes(dataset);
 
                     // balance
-                    dataHelper.balance(dataset, run);
+                    datasetHelper.balance(dataset, run);
 
                     // shuffle
-                    dataHelper.shuffle(dataset, run);
+                    datasetHelper.shuffle(dataset, run);
 
                     // split
-                    Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
+                    Pair<Instances, Instances> datasets = datasetHelper.split(dataset, 0.5);
                     Instances trainSet = datasets.getLeft();
                     Instances testSet = datasets.getRight();
 
@@ -98,7 +98,7 @@ public class Runner
             }
 
             // save to arff
-            dataHelper.saveToArff(metadatum, dataset);
+            datasetHelper.saveToArff(metadatum, dataset);
         }
     }
 }

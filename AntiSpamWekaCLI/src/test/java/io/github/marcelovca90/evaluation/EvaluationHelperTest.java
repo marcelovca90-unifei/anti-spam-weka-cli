@@ -33,7 +33,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
-import io.github.marcelovca90.data.DataHelper;
+import io.github.marcelovca90.data.DatasetHelper;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -41,7 +41,7 @@ import weka.core.Instances;
 public class EvaluationHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
-    private final DataHelper dataHelper = new DataHelper();
+    private final DatasetHelper datasetHelper = new DatasetHelper();
     private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
     private Instances dataset;
@@ -58,7 +58,7 @@ public class EvaluationHelperTest
     {
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
         Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        dataset = dataHelper.loadDataset(metadatum, false);
+        dataset = datasetHelper.loadDataset(metadatum, false);
 
         String className = "weka.classifiers.functions.VotedPerceptron";
         String options = "-I 1 -E 1.0 -S 1 -M 10000";
@@ -86,8 +86,8 @@ public class EvaluationHelperTest
         // given
         for (int i = 0; i < 3; i++)
         {
-            dataHelper.shuffle(dataset, i);
-            Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
+            datasetHelper.shuffle(dataset, i);
+            Pair<Instances, Instances> datasets = datasetHelper.split(dataset, 0.5);
             trainSet = datasets.getLeft();
             testSet = datasets.getRight();
 

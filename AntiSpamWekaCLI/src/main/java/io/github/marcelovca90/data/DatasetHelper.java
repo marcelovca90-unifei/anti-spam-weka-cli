@@ -63,9 +63,9 @@ import weka.core.converters.ArffSaver;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
-public class DataHelper
+public class DatasetHelper
 {
-    private static final Logger LOGGER = LogManager.getLogger(DataHelper.class);
+    private static final Logger LOGGER = LogManager.getLogger(DatasetHelper.class);
     private static final int SIZE_INT = SizeOf.intSize();
     private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 

@@ -49,7 +49,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DataHelperTest
+public class DatasetHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
     private final Triple<String, Integer, Integer> metadatum8 = getMatadatum("data/8", 0, 19);
@@ -57,7 +57,7 @@ public class DataHelperTest
     private final Triple<String, Integer, Integer> metadatum32 = getMatadatum("data/32", 0, 3);
 
     @InjectMocks
-    private DataHelper dataHelper;
+    private DatasetHelper datasetHelper;
 
     @Test
     public void loadMetadata_invalidFilename_shouldReturnEmptyMetadata()
@@ -66,7 +66,7 @@ public class DataHelperTest
         String filename = "foo_metadata_bar.txt";
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = dataHelper.loadMetadata(filename);
+        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -80,7 +80,7 @@ public class DataHelperTest
         String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = dataHelper.loadMetadata(filename);
+        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -103,7 +103,7 @@ public class DataHelperTest
     public void loadDataset_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum16, true);
+        Instances dataset = datasetHelper.loadDataset(metadatum16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -114,7 +114,7 @@ public class DataHelperTest
     public void loadDataset_doSearchArffAndUnavailableArff_shouldDelegateAndReturnNotNullInstances() throws URISyntaxException
     {
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum32, true);
+        Instances dataset = datasetHelper.loadDataset(metadatum32, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -131,7 +131,7 @@ public class DataHelperTest
         FileUtils.moveFile(new File(folder + File.separator + "lipsum.arff"), new File(folder + File.separator + "data.arff"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum16, true);
+        Instances dataset = datasetHelper.loadDataset(metadatum16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -145,7 +145,7 @@ public class DataHelperTest
     public void loadDataset_doNotSearchArffAndAvailableFile_shouldReturnNotNullInstances() throws URISyntaxException
     {
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, notNullValue());
@@ -162,7 +162,7 @@ public class DataHelperTest
         FileUtils.moveFile(new File(folder + File.separator + "spam"), new File(folder + File.separator + "spam.bkp"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -183,7 +183,7 @@ public class DataHelperTest
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "spam"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -198,12 +198,12 @@ public class DataHelperTest
     public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
         int hamCountBefore = count(dataset, ClassType.HAM);
         int spamCountBefore = count(dataset, ClassType.SPAM);
 
         // when
-        dataHelper.balance(dataset, 0);
+        datasetHelper.balance(dataset, 0);
 
         // then
         assertThat(dataset, notNullValue());
@@ -217,10 +217,10 @@ public class DataHelperTest
     public void selectAttributes_withValidDataset_shouldReturnFilteredDataset() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // when
-        Instances filteredDataset = dataHelper.selectAttributes(dataset);
+        Instances filteredDataset = datasetHelper.selectAttributes(dataset);
 
         // then
         assertThat(filteredDataset, notNullValue());
@@ -231,7 +231,7 @@ public class DataHelperTest
     public void selectAttributes_withInvalidDataset_shouldReturnNull() throws URISyntaxException
     {
         // when
-        Instances filteredDataset = dataHelper.selectAttributes(null);
+        Instances filteredDataset = datasetHelper.selectAttributes(null);
 
         // then
         assertThat(filteredDataset, nullValue());
@@ -241,11 +241,11 @@ public class DataHelperTest
     public void shuffle_firstElementMustHaveChanged() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // when
         Instance firstBeforeShuffle = dataset.get(0);
-        dataHelper.shuffle(dataset, 0);
+        datasetHelper.shuffle(dataset, 0);
         Instance firstAfterShuffle = dataset.get(0);
 
         // then
@@ -259,10 +259,10 @@ public class DataHelperTest
     public void split_shouldReturnTwoSetsWhoseSumMatchesOriginalSetSize() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // when
-        Pair<Instances, Instances> splitDataset = dataHelper.split(dataset, 0.5);
+        Pair<Instances, Instances> splitDataset = datasetHelper.split(dataset, 0.5);
 
         // then
         assertThat(splitDataset, notNullValue());
@@ -277,10 +277,10 @@ public class DataHelperTest
     public void saveToArff_null() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
 
         // when
-        dataHelper.saveToArff(metadatum8, dataset);
+        datasetHelper.saveToArff(metadatum8, dataset);
 
         // then
         String filename = metadatum8.getLeft() + File.separator + "data.arff";
@@ -291,10 +291,10 @@ public class DataHelperTest
     public void saveToArff_notNull() throws URISyntaxException
     {
         // given
-        Instances dataset = dataHelper.loadDataset(metadatum32, false);
+        Instances dataset = datasetHelper.loadDataset(metadatum32, false);
 
         // when
-        dataHelper.saveToArff(metadatum32, dataset);
+        datasetHelper.saveToArff(metadatum32, dataset);
 
         // then
         String filename = metadatum32.getLeft() + File.separator + "data.arff";
