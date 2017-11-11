@@ -39,7 +39,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -52,9 +51,9 @@ import weka.core.Instances;
 public class DatasetHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
-    private final Triple<String, Integer, Integer> metadatum8 = getMatadatum("data/8", 0, 19);
-    private final Triple<String, Integer, Integer> metadatum16 = getMatadatum("data/16", 0, 17);
-    private final Triple<String, Integer, Integer> metadatum32 = getMatadatum("data/32", 0, 3);
+    private final DatasetMetadata metadata8 = buildMetadata("dataset/method/8", 0, 19);
+    private final DatasetMetadata metadata16 = buildMetadata("dataset/method/16", 0, 17);
+    private final DatasetMetadata metadata32 = buildMetadata("dataset/method/32", 0, 3);
 
     @InjectMocks
     private DatasetHelper datasetHelper;
@@ -66,7 +65,7 @@ public class DatasetHelperTest
         String filename = "foo_metadata_bar.txt";
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
+        Set<DatasetMetadata> metadata = datasetHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
@@ -80,30 +79,30 @@ public class DatasetHelperTest
         String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
         // when
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(filename);
+        Set<DatasetMetadata> metadata = datasetHelper.loadMetadata(filename);
 
         // then
         assertThat(metadata, notNullValue());
         assertThat(metadata.size(), equalTo(2));
 
-        Iterator<Triple<String, Integer, Integer>> iterator = metadata.iterator();
+        Iterator<DatasetMetadata> iterator = metadata.iterator();
 
-        Triple<String, Integer, Integer> next = iterator.next();
-        assertThat(next.getLeft(), equalTo(FilenameUtils.separatorsToSystem("data/8")));
-        assertThat(next.getMiddle(), equalTo(0));
-        assertThat(next.getRight(), equalTo(19));
+        DatasetMetadata next = iterator.next();
+        assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/8")));
+        assertThat(next.getEmptyHamAmount(), equalTo(0));
+        assertThat(next.getEmptySpamAmount(), equalTo(19));
 
         next = iterator.next();
-        assertThat(next.getLeft(), equalTo(FilenameUtils.separatorsToSystem("data/32")));
-        assertThat(next.getMiddle(), equalTo(0));
-        assertThat(next.getRight(), equalTo(3));
+        assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/32")));
+        assertThat(next.getEmptyHamAmount(), equalTo(0));
+        assertThat(next.getEmptySpamAmount(), equalTo(3));
     }
 
     @Test
     public void loadDataset_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum16, true);
+        Instances dataset = datasetHelper.loadDataset(metadata16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -114,7 +113,7 @@ public class DatasetHelperTest
     public void loadDataset_doSearchArffAndUnavailableArff_shouldDelegateAndReturnNotNullInstances() throws URISyntaxException
     {
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum32, true);
+        Instances dataset = datasetHelper.loadDataset(metadata32, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -125,13 +124,13 @@ public class DatasetHelperTest
     public void loadDataset_doSearchArffAndCorruptArff_shouldDelegateAndReturnNotNullInstances() throws URISyntaxException, IOException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/16").toURI()).toFile().getAbsolutePath();
+        String folder = Paths.get(classLoader.getResource("dataset/method/16").toURI()).toFile().getAbsolutePath();
 
         FileUtils.moveFile(new File(folder + File.separator + "data.arff"), new File(folder + File.separator + "data.arff.bkp"));
         FileUtils.moveFile(new File(folder + File.separator + "lipsum.arff"), new File(folder + File.separator + "data.arff"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum16, true);
+        Instances dataset = datasetHelper.loadDataset(metadata16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -145,7 +144,7 @@ public class DatasetHelperTest
     public void loadDataset_doNotSearchArffAndAvailableFile_shouldReturnNotNullInstances() throws URISyntaxException
     {
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // then
         assertThat(dataset, notNullValue());
@@ -156,13 +155,13 @@ public class DatasetHelperTest
     public void loadDataset_doNotSearchArffAndUnavailableFile_shouldReturnNullInstances() throws URISyntaxException, IOException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        String folder = Paths.get(classLoader.getResource("dataset/method/8").toURI()).toFile().getAbsolutePath();
 
         FileUtils.moveFile(new File(folder + File.separator + "ham"), new File(folder + File.separator + "ham.bkp"));
         FileUtils.moveFile(new File(folder + File.separator + "spam"), new File(folder + File.separator + "spam.bkp"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -175,7 +174,7 @@ public class DatasetHelperTest
     public void loadDataset_doNotSearchArffAndCorruptFile_shouldReturnNullInstances() throws URISyntaxException, IOException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
+        String folder = Paths.get(classLoader.getResource("dataset/method/8").toURI()).toFile().getAbsolutePath();
 
         FileUtils.moveFile(new File(folder + File.separator + "ham"), new File(folder + File.separator + "ham.bkp"));
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "ham"));
@@ -183,7 +182,7 @@ public class DatasetHelperTest
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "spam"));
 
         // when
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -198,7 +197,7 @@ public class DatasetHelperTest
     public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
         int hamCountBefore = count(dataset, ClassType.HAM);
         int spamCountBefore = count(dataset, ClassType.SPAM);
 
@@ -217,7 +216,7 @@ public class DatasetHelperTest
     public void selectAttributes_withValidDataset_shouldReturnFilteredDataset() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // when
         Instances filteredDataset = datasetHelper.selectAttributes(dataset);
@@ -241,7 +240,7 @@ public class DatasetHelperTest
     public void shuffle_firstElementMustHaveChanged() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // when
         Instance firstBeforeShuffle = dataset.get(0);
@@ -259,7 +258,7 @@ public class DatasetHelperTest
     public void split_shouldReturnTwoSetsWhoseSumMatchesOriginalSetSize() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // when
         Pair<Instances, Instances> splitDataset = datasetHelper.split(dataset, 0.5);
@@ -277,32 +276,30 @@ public class DatasetHelperTest
     public void saveToArff_null() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata8, false);
 
         // when
-        datasetHelper.saveToArff(metadatum8, dataset);
+        datasetHelper.saveToArff(metadata8, dataset);
 
         // then
-        String filename = metadatum8.getLeft() + File.separator + "data.arff";
-        assertThat(Files.exists(Paths.get(filename)), equalTo(true));
+        assertThat(Files.exists(Paths.get(metadata8.getArffFilename())), equalTo(true));
     }
 
     @Test
     public void saveToArff_notNull() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadatum32, false);
+        Instances dataset = datasetHelper.loadDataset(metadata32, false);
 
         // when
-        datasetHelper.saveToArff(metadatum32, dataset);
+        datasetHelper.saveToArff(metadata32, dataset);
 
         // then
-        String filename = metadatum32.getLeft() + File.separator + "data.arff";
-        assertThat(Files.exists(Paths.get(filename)), equalTo(true));
+        assertThat(Files.exists(Paths.get(metadata32.getArffFilename())), equalTo(true));
 
         // tear down
-        FileUtils.deleteQuietly(Paths.get(filename).toFile());
-        assertThat(Files.exists(Paths.get(filename)), equalTo(false));
+        FileUtils.deleteQuietly(Paths.get(metadata32.getArffFilename()).toFile());
+        assertThat(Files.exists(Paths.get(metadata32.getArffFilename())), equalTo(false));
     }
 
     private int count(Instances dataset, ClassType classType)
@@ -310,19 +307,19 @@ public class DatasetHelperTest
         return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
     }
 
-    private Triple<String, Integer, Integer> getMatadatum(String resourcePath, int hamCount, int spamCount)
+    private DatasetMetadata buildMetadata(String resourcePath, int hamCount, int spamCount)
     {
         String folder;
-        Triple<String, Integer, Integer> metadatum = null;
+        DatasetMetadata metadata = null;
         try
         {
             folder = Paths.get(classLoader.getResource(resourcePath).toURI()).toFile().getAbsolutePath();
-            metadatum = Triple.of(folder, hamCount, spamCount);
+            metadata = new DatasetMetadata(folder, hamCount, spamCount);
         }
         catch (URISyntaxException e)
         {
             e.printStackTrace();
         }
-        return metadatum;
+        return metadata;
     }
 }

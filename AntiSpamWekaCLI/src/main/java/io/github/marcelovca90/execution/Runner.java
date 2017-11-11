@@ -24,12 +24,12 @@ package io.github.marcelovca90.execution;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
 import io.github.marcelovca90.configuration.ConfigurationLoader;
 import io.github.marcelovca90.data.DatasetHelper;
+import io.github.marcelovca90.data.DatasetMetadata;
 import io.github.marcelovca90.evaluation.EvaluationHelper;
 import io.github.marcelovca90.evaluation.TimedEvaluation;
 import weka.classifiers.Classifier;
@@ -45,11 +45,11 @@ public class Runner
     public static void main(String[] args) throws Exception
     {
         Configuration config = configLoader.load();
-        Set<Triple<String, Integer, Integer>> metadata = datasetHelper.loadMetadata(config.getMetadataPath());
+        Set<DatasetMetadata> datasetMetadata = datasetHelper.loadMetadata(config.getMetadataPath());
 
-        for (Triple<String, Integer, Integer> metadatum : metadata)
+        for (DatasetMetadata metadata : datasetMetadata)
         {
-            Instances dataset = datasetHelper.loadDataset(metadatum, false);
+            Instances dataset = datasetHelper.loadDataset(metadata, false);
 
             for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
             {
@@ -64,6 +64,7 @@ public class Runner
                 {
                     // select attributes
                     dataset = datasetHelper.selectAttributes(dataset);
+                    metadata.setNoFeaturesAfter(dataset.numAttributes() - 1);
 
                     // balance
                     datasetHelper.balance(dataset, run);
@@ -90,15 +91,15 @@ public class Runner
 
                     // evaluate
                     evaluationHelper.compute(classifier, evaluation);
-                    evaluationHelper.print(classifier);
+                    evaluationHelper.print(metadata, classifier);
                 }
 
-                evaluationHelper.summarize(classifier);
+                evaluationHelper.summarize(metadata, classifier);
                 evaluationHelper.removeAppender(classifier);
             }
 
             // save to arff
-            datasetHelper.saveToArff(metadatum, dataset);
+            datasetHelper.saveToArff(metadata, dataset);
         }
     }
 }

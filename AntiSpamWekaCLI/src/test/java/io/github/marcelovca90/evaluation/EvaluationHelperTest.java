@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +33,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.data.DatasetHelper;
+import io.github.marcelovca90.data.DatasetMetadata;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -44,6 +44,7 @@ public class EvaluationHelperTest
     private final DatasetHelper datasetHelper = new DatasetHelper();
     private final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
 
+    private DatasetMetadata metadata;
     private Instances dataset;
     private Instances trainSet;
     private Instances testSet;
@@ -56,9 +57,9 @@ public class EvaluationHelperTest
     @Before
     public void setUp() throws URISyntaxException
     {
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        dataset = datasetHelper.loadDataset(metadatum, false);
+        String folder = Paths.get(classLoader.getResource("dataset/method/8").toURI()).toFile().getAbsolutePath();
+        metadata = new DatasetMetadata(folder, 0, 19);
+        dataset = datasetHelper.loadDataset(metadata, false);
 
         String className = "weka.classifiers.functions.VotedPerceptron";
         String options = "-I 1 -E 1.0 -S 1 -M 10000";
@@ -75,8 +76,8 @@ public class EvaluationHelperTest
         // when
         evaluationHelper.addAppender(classifier);
         evaluationHelper.compute(classifier, evaluation);
-        evaluationHelper.print(classifier);
-        evaluationHelper.summarize(classifier);
+        evaluationHelper.print(metadata, classifier);
+        evaluationHelper.summarize(metadata, classifier);
         evaluationHelper.removeAppender(classifier);
     }
 
@@ -97,10 +98,10 @@ public class EvaluationHelperTest
             // when
             evaluationHelper.addAppender(classifier);
             evaluationHelper.compute(classifier, evaluation);
-            evaluationHelper.print(classifier);
+            evaluationHelper.print(metadata, classifier);
         }
 
-        evaluationHelper.summarize(classifier);
+        evaluationHelper.summarize(metadata, classifier);
         evaluationHelper.removeAppender(classifier);
     }
 

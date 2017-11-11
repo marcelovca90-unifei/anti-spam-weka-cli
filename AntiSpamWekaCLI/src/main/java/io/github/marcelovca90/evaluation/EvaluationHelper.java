@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.FileAppender;
 
 import io.github.marcelovca90.data.ClassType;
+import io.github.marcelovca90.data.DatasetMetadata;
 import weka.classifiers.Classifier;
 
 public class EvaluationHelper
@@ -94,17 +95,17 @@ public class EvaluationHelper
         aggregate(classifier, "testingTime", evaluation.testingTime());
     }
 
-    public void print(Classifier classifier)
+    public void print(DatasetMetadata metadata, Classifier classifier)
     {
         if (RESULTS.get(classifier).values().stream().allMatch(stat -> stat.getN() == 1))
-            LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
-        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f", v.getValues()[(int) v.getN() - 1])).collect(Collectors.joining("\t")));
+            LOGGER.info(buildHeaderPrefix() + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
+        LOGGER.info(buildBodyPrefix(metadata) + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f", v.getValues()[(int) v.getN() - 1])).collect(Collectors.joining("\t")));
     }
 
-    public void summarize(Classifier classifier)
+    public void summarize(DatasetMetadata metadata, Classifier classifier)
     {
-        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
-        LOGGER.info(classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f ± %.2f", v.getMean(), confidenceInterval(v, 0.05))).collect(Collectors.joining("\t")));
+        LOGGER.info(buildHeaderPrefix() + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).keySet().stream().map(k -> StringUtils.rightPad(k, 15)).collect(Collectors.joining("\t")));
+        LOGGER.info(buildBodyPrefix(metadata) + classifier.getClass().getSimpleName() + "\t" + RESULTS.get(classifier).values().stream().map(v -> String.format("%.2f ± %.2f", v.getMean(), confidenceInterval(v, 0.05))).collect(Collectors.joining("\t")));
     }
 
     private void aggregate(Classifier classifier, String metric, double value)
@@ -112,6 +113,16 @@ public class EvaluationHelper
         RESULTS.putIfAbsent(classifier, new LinkedHashMap<>());
         RESULTS.get(classifier).putIfAbsent(metric, new DescriptiveStatistics());
         RESULTS.get(classifier).get(metric).addValue(value);
+    }
+    
+    private String buildHeaderPrefix()
+    {
+        return String.format("%s\t%s\t%s\t%s\t", "name", "method", "noFeaturesBefore", "noFeaturesAfter");
+    }
+    
+    private String buildBodyPrefix(DatasetMetadata metadata)
+    {
+        return String.format("%s\t%s\t%d\t%d\t", metadata.getName(), metadata.getMethod(), metadata.getNoFeaturesBefore(), metadata.getNoFeaturesBefore());
     }
 
     private double confidenceInterval(DescriptiveStatistics statistics, double significance)

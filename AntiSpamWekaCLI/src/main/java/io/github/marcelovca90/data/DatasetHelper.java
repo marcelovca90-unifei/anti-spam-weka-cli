@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -69,9 +68,9 @@ public class DatasetHelper
     private static final int SIZE_INT = SizeOf.intSize();
     private static final int SIZE_DOUBLE = SizeOf.doubleSize();
 
-    public Set<Triple<String, Integer, Integer>> loadMetadata(String filename)
+    public Set<DatasetMetadata> loadMetadata(String filename)
     {
-        Set<Triple<String, Integer, Integer>> metadata = new LinkedHashSet<>();
+        Set<DatasetMetadata> metadata = new LinkedHashSet<>();
         String systemFilename = FilenameUtils.separatorsToSystem(filename);
 
         try
@@ -86,7 +85,7 @@ public class DatasetHelper
                 Integer emptySpamAmount = Integer.parseInt(parts[2]);
 
                 // add triple to metadata set
-                metadata.add(Triple.of(folder, emptyHamAmount, emptySpamAmount));
+                metadata.add(new DatasetMetadata(folder, emptyHamAmount, emptySpamAmount));
             });
         }
         catch (IOException e)
@@ -97,10 +96,10 @@ public class DatasetHelper
         return metadata;
     }
 
-    public Instances loadDataset(Triple<String, Integer, Integer> metadatum, boolean lookForArff)
+    public Instances loadDataset(DatasetMetadata metadata, boolean lookForArff)
     {
         Instances dataset = null;
-        String arffFilename = metadatum.getLeft() + File.separator + "data.arff";
+        String arffFilename = metadata.getArffFilename();
 
         if (lookForArff)
         {
@@ -114,18 +113,18 @@ public class DatasetHelper
             catch (FileNotFoundException e)
             {
                 LOGGER.error("Could not find file " + arffFilename + ".", e);
-                return loadDataset(metadatum, false);
+                return loadDataset(metadata, false);
             }
             catch (IOException e)
             {
                 LOGGER.error("Could not read file " + arffFilename + ".", e);
-                return loadDataset(metadatum, false);
+                return loadDataset(metadata, false);
             }
         }
         else
         {
-            Instances ham = loadDataset(metadatum.getLeft() + File.separator + "ham", ClassType.HAM);
-            Instances spam = loadDataset(metadatum.getLeft() + File.separator + "spam", ClassType.SPAM);
+            Instances ham = loadDataset(metadata.getFolder() + File.separator + "ham", ClassType.HAM);
+            Instances spam = loadDataset(metadata.getFolder() + File.separator + "spam", ClassType.SPAM);
             dataset = merge(ham, spam);
         }
 
@@ -213,9 +212,9 @@ public class DatasetHelper
         return Pair.of(trainSet, testSet);
     }
 
-    public void saveToArff(Triple<String, Integer, Integer> metadatum, Instances instances)
+    public void saveToArff(DatasetMetadata metadata, Instances instances)
     {
-        String filename = metadatum.getLeft() + File.separator + "data.arff";
+        String filename = metadata.getArffFilename();
         File outputFile = new File(filename);
 
         if (!outputFile.exists())
