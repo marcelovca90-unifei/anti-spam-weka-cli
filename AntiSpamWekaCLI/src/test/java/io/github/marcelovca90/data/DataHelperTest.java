@@ -31,6 +31,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Set;
@@ -51,6 +52,9 @@ import weka.core.Instances;
 public class DataHelperTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
+    private final Triple<String, Integer, Integer> metadatum8 = getMatadatum("data/8", 0, 19);
+    private final Triple<String, Integer, Integer> metadatum16 = getMatadatum("data/16", 0, 17);
+    private final Triple<String, Integer, Integer> metadatum32 = getMatadatum("data/32", 0, 3);
 
     @InjectMocks
     private DataHelper dataHelper;
@@ -98,12 +102,8 @@ public class DataHelperTest
     @Test
     public void loadDataset_doSearchArffAndAvailableArff_shouldReturnNotNullInstances() throws Exception
     {
-        // given
-        String folder = Paths.get(classLoader.getResource("data/16").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 17);
-
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -113,12 +113,8 @@ public class DataHelperTest
     @Test
     public void loadDataset_doSearchArffAndUnavailableArff_shouldDelegateAndReturnNotNullInstances() throws URISyntaxException
     {
-        // given
-        String folder = Paths.get(classLoader.getResource("data/32").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 3);
-
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum32, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -130,13 +126,12 @@ public class DataHelperTest
     {
         // given
         String folder = Paths.get(classLoader.getResource("data/16").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 17);
 
         FileUtils.moveFile(new File(folder + File.separator + "data.arff"), new File(folder + File.separator + "data.arff.bkp"));
         FileUtils.moveFile(new File(folder + File.separator + "lipsum.arff"), new File(folder + File.separator + "data.arff"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, true);
+        Instances dataset = dataHelper.loadDataset(metadatum16, true);
 
         // then
         assertThat(dataset, notNullValue());
@@ -149,12 +144,8 @@ public class DataHelperTest
     @Test
     public void loadDataset_doNotSearchArffAndAvailableFile_shouldReturnNotNullInstances() throws URISyntaxException
     {
-        // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, notNullValue());
@@ -166,13 +157,12 @@ public class DataHelperTest
     {
         // given
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
 
         FileUtils.moveFile(new File(folder + File.separator + "ham"), new File(folder + File.separator + "ham.bkp"));
         FileUtils.moveFile(new File(folder + File.separator + "spam"), new File(folder + File.separator + "spam.bkp"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -186,7 +176,6 @@ public class DataHelperTest
     {
         // given
         String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
 
         FileUtils.moveFile(new File(folder + File.separator + "ham"), new File(folder + File.separator + "ham.bkp"));
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "ham"));
@@ -194,7 +183,7 @@ public class DataHelperTest
         FileUtils.copyFile(new File(folder + File.separator + "empty"), new File(folder + File.separator + "spam"));
 
         // when
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // then
         assertThat(dataset, nullValue());
@@ -209,9 +198,7 @@ public class DataHelperTest
     public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
         int hamCountBefore = count(dataset, ClassType.HAM);
         int spamCountBefore = count(dataset, ClassType.SPAM);
 
@@ -226,18 +213,11 @@ public class DataHelperTest
         assertThat(spamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
     }
 
-    private int count(Instances dataset, ClassType classType)
-    {
-        return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
-    }
-
     @Test
     public void selectAttributes_withValidDataset_shouldReturnFilteredDataset() throws URISyntaxException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // when
         Instances filteredDataset = dataHelper.selectAttributes(dataset);
@@ -261,9 +241,7 @@ public class DataHelperTest
     public void shuffle_firstElementMustHaveChanged() throws URISyntaxException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // when
         Instance firstBeforeShuffle = dataset.get(0);
@@ -281,9 +259,7 @@ public class DataHelperTest
     public void split_shouldReturnTwoSetsWhoseSumMatchesOriginalSetSize() throws URISyntaxException
     {
         // given
-        String folder = Paths.get(classLoader.getResource("data/8").toURI()).toFile().getAbsolutePath();
-        Triple<String, Integer, Integer> metadatum = Triple.of(folder, 0, 19);
-        Instances dataset = dataHelper.loadDataset(metadatum, false);
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
 
         // when
         Pair<Instances, Instances> splitDataset = dataHelper.split(dataset, 0.5);
@@ -295,5 +271,58 @@ public class DataHelperTest
         assertThat(splitDataset.getRight(), notNullValue());
         assertThat(splitDataset.getRight().isEmpty(), equalTo(false));
         assertThat(splitDataset.getLeft().size() + splitDataset.getRight().size(), equalTo(dataset.size()));
+    }
+
+    @Test
+    public void saveToArff_null() throws URISyntaxException
+    {
+        // given
+        Instances dataset = dataHelper.loadDataset(metadatum8, false);
+
+        // when
+        dataHelper.saveToArff(metadatum8, dataset);
+
+        // then
+        String filename = metadatum8.getLeft() + File.separator + "data.arff";
+        assertThat(Files.exists(Paths.get(filename)), equalTo(true));
+    }
+
+    @Test
+    public void saveToArff_notNull() throws URISyntaxException
+    {
+        // given
+        Instances dataset = dataHelper.loadDataset(metadatum32, false);
+
+        // when
+        dataHelper.saveToArff(metadatum32, dataset);
+
+        // then
+        String filename = metadatum32.getLeft() + File.separator + "data.arff";
+        assertThat(Files.exists(Paths.get(filename)), equalTo(true));
+
+        // tear down
+        FileUtils.deleteQuietly(Paths.get(filename).toFile());
+        assertThat(Files.exists(Paths.get(filename)), equalTo(false));
+    }
+
+    private int count(Instances dataset, ClassType classType)
+    {
+        return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
+    }
+
+    private Triple<String, Integer, Integer> getMatadatum(String resourcePath, int hamCount, int spamCount)
+    {
+        String folder;
+        Triple<String, Integer, Integer> metadatum = null;
+        try
+        {
+            folder = Paths.get(classLoader.getResource(resourcePath).toURI()).toFile().getAbsolutePath();
+            metadatum = Triple.of(folder, hamCount, spamCount);
+        }
+        catch (URISyntaxException e)
+        {
+            e.printStackTrace();
+        }
+        return metadatum;
     }
 }
