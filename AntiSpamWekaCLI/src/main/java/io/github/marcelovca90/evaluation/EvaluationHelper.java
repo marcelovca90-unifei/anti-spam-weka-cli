@@ -52,6 +52,7 @@ public class EvaluationHelper
         {
             Appender appender = FileAppender.newBuilder().withFileName(loggerName).withName(simpleName).build();
             ((org.apache.logging.log4j.core.Logger) LOGGER).addAppender(appender);
+            appender.start();
             APPENDERS.put(classifier, appender);
         }
     }
@@ -60,6 +61,7 @@ public class EvaluationHelper
     {
         Appender appender = APPENDERS.get(classifier);
         ((org.apache.logging.log4j.core.Logger) LOGGER).removeAppender(appender);
+        appender.stop();
         APPENDERS.remove(classifier);
     }
 
