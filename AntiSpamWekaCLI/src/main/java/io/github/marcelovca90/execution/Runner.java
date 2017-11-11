@@ -62,14 +62,14 @@ public class Runner
 
                 for (int run = 0; run < config.getRuns(); run++)
                 {
+                    // select attributes
+                    dataset = dataHelper.selectAttributes(dataset);
+
                     // balance
                     dataHelper.balance(dataset, run);
 
                     // shuffle
                     dataHelper.shuffle(dataset, run);
-
-                    // select attributes
-                    dataset = dataHelper.selectAttributes(dataset);
 
                     // split
                     Pair<Instances, Instances> datasets = dataHelper.split(dataset, 0.5);
@@ -96,6 +96,9 @@ public class Runner
                 evaluationHelper.summarize(classifier);
                 evaluationHelper.removeAppender(classifier);
             }
+
+            // save to arff
+            dataHelper.saveToArff(metadatum, dataset);
         }
     }
 }

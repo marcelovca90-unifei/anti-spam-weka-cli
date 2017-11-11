@@ -59,6 +59,7 @@ import weka.core.Instances;
 import weka.core.OptionHandler;
 import weka.core.Utils;
 import weka.core.converters.ArffLoader.ArffReader;
+import weka.core.converters.ArffSaver;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
 
@@ -210,6 +211,27 @@ public class DataHelper
         testSet.setClassIndex(numberOfAttributes - 1);
 
         return Pair.of(trainSet, testSet);
+    }
+
+    public void saveToArff(Triple<String, Integer, Integer> metadatum, Instances instances)
+    {
+        String filename = metadatum.getLeft() + File.separator + "data.arff";
+        File outputFile = new File(filename);
+
+        if (!outputFile.exists())
+        {
+            try
+            {
+                ArffSaver arffSaver = new ArffSaver();
+                arffSaver.setInstances(instances);
+                arffSaver.setFile(outputFile);
+                arffSaver.writeBatch();
+            }
+            catch (IOException e)
+            {
+                LOGGER.error("Unable to save ARFF file " + filename + ".", e);
+            }
+        }
     }
 
     private ArrayList<Attribute> createAttributes(long featureAmount)
