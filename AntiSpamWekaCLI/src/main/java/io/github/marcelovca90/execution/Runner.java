@@ -37,12 +37,20 @@ import weka.core.Instances;
 
 public class Runner
 {
-    private static final ConfigurationLoader configLoader = new ConfigurationLoader();
-    private static final DatasetHelper datasetHelper = new DatasetHelper();
-    private static final ClassifierBuilder classifierBuilder = new ClassifierBuilder();
-    private static final EvaluationHelper evaluationHelper = new EvaluationHelper();
+    private ConfigurationLoader configLoader;
+    private DatasetHelper datasetHelper;
+    private ClassifierBuilder classifierBuilder;
+    private EvaluationHelper evaluationHelper;
 
-    public static void main(String[] args) throws Exception
+    public Runner()
+    {
+        configLoader = new ConfigurationLoader();
+        datasetHelper = new DatasetHelper();
+        classifierBuilder = new ClassifierBuilder();
+        evaluationHelper = new EvaluationHelper();
+    }
+
+    public void run() throws Exception
     {
         Configuration config = configLoader.load();
         Set<DatasetMetadata> datasetMetadata = datasetHelper.loadMetadata(config.getMetadataPath());
@@ -101,5 +109,10 @@ public class Runner
             // save to arff
             datasetHelper.saveToArff(metadata, dataset);
         }
+    }
+
+    public static void main(String[] args) throws Exception
+    {
+        new Runner().run();
     }
 }
