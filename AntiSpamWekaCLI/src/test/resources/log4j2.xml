@@ -26,7 +26,7 @@
 		</File>
 	</Appenders>
 	<Loggers>
-		<Root level="error">
+		<Root level="off">
 			<appender-ref ref="TraceConsole" />
 			<appender-ref ref="TraceFile" />
 		</Root>
