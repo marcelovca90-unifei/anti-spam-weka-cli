@@ -123,12 +123,18 @@ public class DatasetHelper
         }
         else
         {
-            Instances ham = loadDataset(metadata.getFolder() + File.separator + "ham", ClassType.HAM);
-            Instances spam = loadDataset(metadata.getFolder() + File.separator + "spam", ClassType.SPAM);
+            Instances ham = loadRawDataset(metadata.getFolder() + File.separator + "ham", ClassType.HAM);
+            Instances spam = loadRawDataset(metadata.getFolder() + File.separator + "spam", ClassType.SPAM);
             dataset = merge(ham, spam);
         }
 
         return dataset;
+    }
+
+    public void addEmptyInstances(Instances dataset, DatasetMetadata metadata)
+    {
+        dataset.addAll(createEmptyInstances(metadata.getNoFeaturesAfter(), metadata.getEmptyHamAmount(), ClassType.HAM));
+        dataset.addAll(createEmptyInstances(metadata.getNoFeaturesAfter(), metadata.getEmptySpamAmount(), ClassType.SPAM));
     }
 
     public void balance(Instances dataset, int seed)
@@ -243,7 +249,27 @@ public class DatasetHelper
         return attributes;
     }
 
-    private Instances loadDataset(String filename, ClassType classType)
+    private Instances createEmptyInstances(int featureAmount, int count, ClassType type)
+    {
+        Instance emptyInstance;
+        ArrayList<Attribute> emptyAttributes = createAttributes(featureAmount);
+        Instances emptyDataset = new Instances(type.name(), emptyAttributes, count);
+        emptyDataset.setClassIndex(emptyAttributes.size() - 1);
+
+        for (int i = 0; i < count; i++)
+        {
+            emptyInstance = new DenseInstance(featureAmount + 1);
+            emptyInstance.setDataset(emptyDataset);
+            for (int j = 0; j < featureAmount; j++)
+                emptyInstance.setValue(j, 0.0);
+            emptyInstance.setClassValue(type.name());
+            emptyDataset.add(emptyInstance);
+        }
+
+        return emptyDataset;
+    }
+
+    private Instances loadRawDataset(String filename, ClassType classType)
     {
         Instances dataset = null;
 

@@ -70,6 +70,6 @@ public class DatasetMetadata
         this.name = parts[parts.length - 3];
         this.featureSelecion = parts[parts.length - 2];
         this.noFeaturesBefore = Integer.parseInt(parts[parts.length - 1]);
-        this.noFeaturesAfter = Integer.MIN_VALUE;
+        this.noFeaturesAfter = this.noFeaturesBefore;
     }
 }

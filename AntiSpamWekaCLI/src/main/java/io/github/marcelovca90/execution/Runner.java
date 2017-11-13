@@ -52,11 +52,13 @@ public class Runner
 
     public void run() throws Exception
     {
+        // read configuration from properties file
         Configuration config = configLoader.load();
         Set<DatasetMetadata> datasetMetadata = datasetHelper.loadMetadata(config.getMetadataPath());
 
         for (DatasetMetadata metadata : datasetMetadata)
         {
+            // read dataset from filesystem
             Instances dataset = datasetHelper.loadDataset(metadata, false);
 
             for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
@@ -64,8 +66,10 @@ public class Runner
                 String className = classNameAndOptions.getLeft();
                 String options = classNameAndOptions.getRight();
 
+                // create classifier and set its options
                 Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
+                // add logger for this method
                 evaluationHelper.addAppender(classifier);
 
                 for (int run = 0; run < config.getRuns(); run++)
@@ -85,6 +89,10 @@ public class Runner
                     Instances trainSet = datasets.getLeft();
                     Instances testSet = datasets.getRight();
 
+                    // add empty instances
+                    datasetHelper.addEmptyInstances(testSet, metadata);
+
+                    // create evaluation object
                     TimedEvaluation evaluation = new TimedEvaluation(testSet);
 
                     // train
@@ -97,12 +105,15 @@ public class Runner
                     evaluation.evaluateModel(classifier, testSet);
                     evaluation.markTestEnd();
 
-                    // evaluate
+                    // evaluate single execution
                     evaluationHelper.compute(classifier, evaluation);
                     evaluationHelper.print(metadata, classifier);
                 }
 
+                // evaluate all executions for this method
                 evaluationHelper.summarize(metadata, classifier);
+
+                // remove logger for this method
                 evaluationHelper.removeAppender(classifier);
             }
 

@@ -194,6 +194,27 @@ public class DatasetHelperTest
     }
 
     @Test
+    public void addEmptyInstance_shouldReturnDatasetWithNewEmptyInstances() throws Exception
+    {
+        // given
+        Instances dataset = datasetHelper.loadDataset(metadata8, true);
+        int hamCountBefore = (int) dataset.stream().filter(i -> i.classValue() == ClassType.HAM.ordinal()).count();
+        int spamCountBefore = (int) dataset.stream().filter(i -> i.classValue() == ClassType.SPAM.ordinal()).count();
+
+        // when
+        datasetHelper.addEmptyInstances(dataset, metadata8);
+
+        // then
+        assertThat(dataset, notNullValue());
+        assertThat(dataset.isEmpty(), equalTo(false));
+        int hamCountAfter = (int) dataset.stream().filter(i -> i.classValue() == ClassType.HAM.ordinal()).count();
+        int spamCountAfter = (int) dataset.stream().filter(i -> i.classValue() == ClassType.SPAM.ordinal()).count();
+        assertThat(hamCountAfter, equalTo(hamCountBefore + metadata8.getEmptyHamAmount()));
+        assertThat(spamCountAfter, equalTo(spamCountBefore + metadata8.getEmptySpamAmount()));
+        assertThat(dataset.size(), equalTo(hamCountAfter + spamCountAfter));
+    }
+
+    @Test
     public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
     {
         // given
