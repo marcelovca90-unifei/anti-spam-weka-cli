@@ -24,6 +24,7 @@ package io.github.marcelovca90.execution;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.primes.Primes;
 
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
@@ -72,6 +73,9 @@ public class Runner
                 // add logger for this method
                 evaluationHelper.addAppender(classifier);
 
+                // initialize random number generator seed
+                int seed = 2;
+
                 for (int run = 0; run < config.getRuns(); run++)
                 {
                     // select attributes
@@ -79,10 +83,10 @@ public class Runner
                     metadata.setNoFeaturesAfter(dataset.numAttributes() - 1);
 
                     // balance
-                    datasetHelper.balance(dataset, run);
+                    datasetHelper.balance(dataset, seed);
 
                     // shuffle
-                    datasetHelper.shuffle(dataset, run);
+                    datasetHelper.shuffle(dataset, seed);
 
                     // split
                     Pair<Instances, Instances> datasets = datasetHelper.split(dataset, 0.5);
@@ -108,6 +112,9 @@ public class Runner
                     // evaluate single execution
                     evaluationHelper.compute(classifier, evaluation);
                     evaluationHelper.print(metadata, classifier);
+
+                    // update random number generator seed
+                    seed = Primes.nextPrime(seed + 1);
                 }
 
                 // evaluate all executions for this method
