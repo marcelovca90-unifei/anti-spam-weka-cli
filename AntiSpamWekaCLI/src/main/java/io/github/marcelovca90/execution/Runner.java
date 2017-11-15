@@ -62,12 +62,15 @@ public class Runner
             // read dataset from filesystem
             Instances dataset = datasetHelper.loadDataset(metadata, false);
 
+            // select attributes
+            dataset = datasetHelper.selectAttributes(dataset);
+            metadata.setNoFeaturesAfter(dataset.numAttributes() - 1);
+
             for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
             {
+                // create classifier and set its options
                 String className = classNameAndOptions.getLeft();
                 String options = classNameAndOptions.getRight();
-
-                // create classifier and set its options
                 Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).build();
 
                 // add logger for this method
@@ -76,20 +79,19 @@ public class Runner
                 // initialize random number generator seed
                 int seed = 2;
 
+                // run {config.getRuns()} executions
                 for (int run = 0; run < config.getRuns(); run++)
                 {
-                    // select attributes
-                    dataset = datasetHelper.selectAttributes(dataset);
-                    metadata.setNoFeaturesAfter(dataset.numAttributes() - 1);
+                    Instances datasetCopy = new Instances(dataset);
 
                     // balance
-                    datasetHelper.balance(dataset, seed);
+                    datasetHelper.balance(datasetCopy, seed);
 
                     // shuffle
-                    datasetHelper.shuffle(dataset, seed);
+                    datasetHelper.shuffle(datasetCopy, seed);
 
                     // split
-                    Pair<Instances, Instances> datasets = datasetHelper.split(dataset, 0.5);
+                    Pair<Instances, Instances> datasets = datasetHelper.split(datasetCopy, 0.5);
                     Instances trainSet = datasets.getLeft();
                     Instances testSet = datasets.getRight();
 
