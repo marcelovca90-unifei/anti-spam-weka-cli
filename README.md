@@ -1,4 +1,4 @@
-# anti-spam-weka-cli [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka-cli.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka-cli)
+# anti-spam-weka-cli [![Build Status](https://travis-ci.org/marcelovca90/anti-spam-weka-cli.svg?branch=master)](https://travis-ci.org/marcelovca90/anti-spam-weka-cli) [![codecov](https://codecov.io/gh/marcelovca90/anti-spam-weka-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/marcelovca90/anti-spam-weka-cli)
 
 Project of my master's degree in Computer Science ("Study and Research in Anti-Spam Systems").
 
