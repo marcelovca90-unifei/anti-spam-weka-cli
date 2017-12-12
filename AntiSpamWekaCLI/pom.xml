@@ -213,7 +213,7 @@
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>J48graft</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
@@ -233,12 +233,12 @@
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibSVM-CJLin</artifactId>
-            <version>3.21</version>
+            <version>3.22</version>
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>naiveBayesTree</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
