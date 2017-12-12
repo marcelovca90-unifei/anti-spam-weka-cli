@@ -233,7 +233,7 @@
         <dependency>
             <groupId>weka-packages</groupId>
             <artifactId>LibSVM-CJLin</artifactId>
-            <version>3.22</version>
+            <version>3.22a</version>
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
