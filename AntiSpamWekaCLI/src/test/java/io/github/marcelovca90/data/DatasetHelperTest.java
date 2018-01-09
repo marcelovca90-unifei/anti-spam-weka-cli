@@ -89,13 +89,13 @@ public class DatasetHelperTest
 
         DatasetMetadata next = iterator.next();
         assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/8")));
-        assertThat(next.getEmptyHamAmount(), equalTo(0));
-        assertThat(next.getEmptySpamAmount(), equalTo(19));
+        assertThat(next.getNumEmptyHams(), equalTo(0));
+        assertThat(next.getNumEmptySpams(), equalTo(19));
 
         next = iterator.next();
         assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/32")));
-        assertThat(next.getEmptyHamAmount(), equalTo(0));
-        assertThat(next.getEmptySpamAmount(), equalTo(3));
+        assertThat(next.getNumEmptyHams(), equalTo(0));
+        assertThat(next.getNumEmptySpams(), equalTo(3));
     }
 
     @Test
@@ -209,8 +209,8 @@ public class DatasetHelperTest
         assertThat(dataset.isEmpty(), equalTo(false));
         int hamCountAfter = (int) dataset.stream().filter(i -> i.classValue() == ClassType.HAM.ordinal()).count();
         int spamCountAfter = (int) dataset.stream().filter(i -> i.classValue() == ClassType.SPAM.ordinal()).count();
-        assertThat(hamCountAfter, equalTo(hamCountBefore + metadata8.getEmptyHamAmount()));
-        assertThat(spamCountAfter, equalTo(spamCountBefore + metadata8.getEmptySpamAmount()));
+        assertThat(hamCountAfter, equalTo(hamCountBefore + metadata8.getNumEmptyHams()));
+        assertThat(spamCountAfter, equalTo(spamCountBefore + metadata8.getNumEmptySpams()));
         assertThat(dataset.size(), equalTo(hamCountAfter + spamCountAfter));
     }
 

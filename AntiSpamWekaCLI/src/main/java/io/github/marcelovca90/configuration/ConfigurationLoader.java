@@ -7,13 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.xml.bind.DatatypeConverter;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import io.github.marcelovca90.mail.CryptoProtocol;
 
 public class ConfigurationLoader
 {
@@ -35,28 +31,18 @@ public class ConfigurationLoader
 
             // anti spam settings
             config.setMetadataPath(prop.getProperty("metadata"));
-            config.setClassNamesAndOptions(loadClassNamesAndOptions(prop));
             config.setRuns(Integer.parseInt(prop.getProperty("runs")));
 
             // run settings
-            config.setSkipTrain(Boolean.parseBoolean(prop.getProperty("skipTrain")));
-            config.setSkipTest(Boolean.parseBoolean(prop.getProperty("skipTest")));
+            config.setLoadArff(Boolean.parseBoolean(prop.getProperty("loadArff")));
             config.setShrinkFeatures(Boolean.parseBoolean(prop.getProperty("shrinkFeatures")));
             config.setBalanceClasses(Boolean.parseBoolean(prop.getProperty("balanceClasses")));
             config.setIncludeEmpty(Boolean.parseBoolean(prop.getProperty("includeEmpty")));
-            config.setRemoveOutliers(Boolean.parseBoolean(prop.getProperty("removeOutliers")));
-            config.setSaveArff(Boolean.parseBoolean(prop.getProperty("saveArff")));
             config.setSaveModel(Boolean.parseBoolean(prop.getProperty("saveModel")));
-            config.setSaveSets(Boolean.parseBoolean(prop.getProperty("saveSets")));
-            config.setMailResults(Boolean.parseBoolean(prop.getProperty("mailResults")));
+            config.setSaveArff(Boolean.parseBoolean(prop.getProperty("saveArff")));
 
-            // e-mail settings
-            config.setSender(prop.getProperty("sender"));
-            config.setRecipients(prop.getProperty("recipients"));
-            config.setHost(prop.getProperty("server"));
-            config.setProtocol(CryptoProtocol.valueOf(prop.getProperty("protocol")));
-            config.setUsername(prop.getProperty("username"));
-            config.setPassword(new String(DatatypeConverter.parseBase64Binary(prop.getProperty("password"))));
+            // methods and options
+            config.setClassNamesAndOptions(loadClassNamesAndOptions(prop));
         }
         catch (IOException e)
         {

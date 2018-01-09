@@ -9,10 +9,12 @@ public class DatasetMetadata
     private String arffFilename;
     private String name;
     private String featureSelecion;
-    private int noFeaturesBefore;
-    private int noFeaturesAfter;
-    private int emptyHamAmount;
-    private int emptySpamAmount;
+    private int numClasses;
+    private int numInstances;
+    private int numFeaturesBeforeReduction;
+    private int numFeaturesAfterReduction;
+    private int numEmptyHams;
+    private int numEmptySpams;
 
     public String getFolder()
     {
@@ -34,42 +36,62 @@ public class DatasetMetadata
         return featureSelecion;
     }
 
-    public int getNoFeaturesBefore()
+    public int getNumClasses()
     {
-        return noFeaturesBefore;
+        return numClasses;
     }
 
-    public int getNoFeaturesAfter()
+    public void setNumClasses(int numClasses)
     {
-        return noFeaturesAfter;
+        this.numClasses = numClasses;
     }
 
-    public void setNoFeaturesAfter(int noFeaturesAfter)
+    public int getNumInstances()
     {
-        this.noFeaturesAfter = noFeaturesAfter;
+        return numInstances;
     }
 
-    public int getEmptyHamAmount()
+    public void setNumInstances(int numInstances)
     {
-        return emptyHamAmount;
+        this.numInstances = numInstances;
     }
 
-    public int getEmptySpamAmount()
+    public int getNumFeaturesBeforeReduction()
     {
-        return emptySpamAmount;
+        return numFeaturesBeforeReduction;
+    }
+
+    public int getNumFeaturesAfterReduction()
+    {
+        return numFeaturesAfterReduction;
+    }
+
+    public void setNumFeaturesAfterReduction(int numFeaturesAfterReduction)
+    {
+        this.numFeaturesAfterReduction = numFeaturesAfterReduction;
+    }
+
+    public int getNumEmptyHams()
+    {
+        return numEmptyHams;
+    }
+
+    public int getNumEmptySpams()
+    {
+        return numEmptySpams;
     }
 
     public DatasetMetadata(String folder, int emptyHamAmount, int emptySpamAmount)
     {
         this.folder = folder;
         this.arffFilename = folder + File.separator + "data.arff";
-        this.emptyHamAmount = emptyHamAmount;
-        this.emptySpamAmount = emptySpamAmount;
+        this.numEmptyHams = emptyHamAmount;
+        this.numEmptySpams = emptySpamAmount;
 
         String[] parts = folder.split(Pattern.quote(File.separator));
         this.name = parts[parts.length - 3];
         this.featureSelecion = parts[parts.length - 2];
-        this.noFeaturesBefore = Integer.parseInt(parts[parts.length - 1]);
-        this.noFeaturesAfter = this.noFeaturesBefore;
+        this.numFeaturesBeforeReduction = Integer.parseInt(parts[parts.length - 1]);
+        this.numFeaturesAfterReduction = this.numFeaturesBeforeReduction;
     }
 }

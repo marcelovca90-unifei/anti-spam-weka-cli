@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,18 +85,19 @@ public class RunnerTest
                 Pair.of("weka.classifiers.bayes.NaiveBayes", "")));
         when(configuration.getMetadataPath()).thenReturn(filename);
         when(configuration.getRuns()).thenReturn(2);
+        when(configuration.shouldLoadArff()).thenReturn(false);
+        when(configuration.shouldSaveArff()).thenReturn(false);
         when(configLoader.load()).thenReturn(configuration);
 
         when(classifierBuilder.withClassName(anyString())).thenCallRealMethod();
         when(classifierBuilder.withOptions(anyString())).thenCallRealMethod();
+        when(classifierBuilder.customize(any(DatasetMetadata.class))).thenCallRealMethod();
         when(classifierBuilder.build()).thenCallRealMethod();
 
         String folder = Paths.get(classLoader.getResource("dataset/method/8").toURI()).toFile().getAbsolutePath();
         when(datasetHelper.loadMetadata(anyString())).thenReturn(Sets.newHashSet(new DatasetMetadata(folder, 0, 19)));
         when(datasetHelper.loadDataset(any(DatasetMetadata.class), anyBoolean())).thenCallRealMethod();
-        when(datasetHelper.selectAttributes(any(Instances.class))).thenCallRealMethod();
         when(datasetHelper.split(any(Instances.class), anyDouble())).thenCallRealMethod();
-        doNothing().when(datasetHelper).saveToArff(any(DatasetMetadata.class), any(Instances.class));
 
         // when
         runner.run();
@@ -112,6 +113,6 @@ public class RunnerTest
         verify(evaluationHelper, times(2)).summarize(any(DatasetMetadata.class), any(Classifier.class));
         verify(evaluationHelper, times(2)).removeAppender(any(Classifier.class));
 
-        verify(datasetHelper).saveToArff(any(DatasetMetadata.class), any(Instances.class));
+        verify(datasetHelper, never()).saveToArff(any(DatasetMetadata.class), any(Instances.class));
     }
 }

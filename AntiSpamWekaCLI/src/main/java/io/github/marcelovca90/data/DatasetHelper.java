@@ -128,13 +128,19 @@ public class DatasetHelper
             dataset = merge(ham, spam);
         }
 
+        if (dataset != null)
+        {
+            metadata.setNumClasses(dataset.numClasses());
+            metadata.setNumInstances(dataset.numInstances());
+        }
+
         return dataset;
     }
 
     public void addEmptyInstances(Instances dataset, DatasetMetadata metadata)
     {
-        dataset.addAll(createEmptyInstances(metadata.getNoFeaturesAfter(), metadata.getEmptyHamAmount(), ClassType.HAM));
-        dataset.addAll(createEmptyInstances(metadata.getNoFeaturesAfter(), metadata.getEmptySpamAmount(), ClassType.SPAM));
+        dataset.addAll(createEmptyInstances(metadata.getNumFeaturesAfterReduction(), metadata.getNumEmptyHams(), ClassType.HAM));
+        dataset.addAll(createEmptyInstances(metadata.getNumFeaturesAfterReduction(), metadata.getNumEmptySpams(), ClassType.SPAM));
     }
 
     public void balance(Instances dataset, int seed)

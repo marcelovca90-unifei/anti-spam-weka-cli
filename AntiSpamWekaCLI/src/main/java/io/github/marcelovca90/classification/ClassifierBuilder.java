@@ -21,11 +21,14 @@
  ******************************************************************************/
 package io.github.marcelovca90.classification;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.marcelovca90.data.DatasetMetadata;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Utils;
 
 public class ClassifierBuilder
@@ -47,6 +50,27 @@ public class ClassifierBuilder
         return this;
     }
 
+    public ClassifierBuilder customize(DatasetMetadata metadata)
+    {
+        if (className.endsWith("LibSVM") && StringUtils.containsIgnoreCase(options, "-C auto"))
+        {
+            double C = Math.sqrt(metadata.getNumInstances() * (metadata.getNumFeaturesAfterReduction() - 1) + metadata.getNumClasses());
+            options = options.replace("-C auto", String.format("-C %.1f", C));
+        }
+        else if (className.endsWith("RBFNetwork") && StringUtils.containsIgnoreCase(options, "-B auto"))
+        {
+            int B = (int) Math.pow(Math.log(metadata.getNumFeaturesBeforeReduction()) / Math.log(2), 2);
+            options = options.replace("-B auto", String.format("-B %d", B));
+        }
+        else if (className.endsWith("MultilayerPerceptron") && StringUtils.containsIgnoreCase(options, "-H auto"))
+        {
+            int h1 = (metadata.getNumFeaturesAfterReduction() + metadata.getNumClasses()) / 2, h2 = h1 / 2;
+            options = options.replace("-H auto", String.format("-H %d,%d", h1, h2));
+        }
+
+        return this;
+    }
+
     public Classifier build()
     {
         AbstractClassifier classifier = null;
@@ -56,6 +80,12 @@ public class ClassifierBuilder
             Class<?> clazz = Class.forName(className);
             classifier = (AbstractClassifier) clazz.newInstance();
             classifier.setOptions(Utils.splitOptions(options));
+
+            if (classifier instanceof MultilayerPerceptron)
+            {
+                MultilayerPerceptron mlp = (MultilayerPerceptron) classifier;
+                LOGGER.debug("mlp.getHiddenLayers() = [{}]", mlp.getHiddenLayers());
+            }
         }
         catch (ClassNotFoundException e)
         {

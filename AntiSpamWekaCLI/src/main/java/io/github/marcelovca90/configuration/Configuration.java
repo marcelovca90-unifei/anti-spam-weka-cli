@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import io.github.marcelovca90.mail.CryptoProtocol;
-
 public class Configuration
 {
     // anti spam settings
@@ -35,24 +33,12 @@ public class Configuration
     private int runs;
 
     // run settings
-    private boolean skipTrain;
-    private boolean skipTest;
+    private boolean loadArff;
     private boolean shrinkFeatures;
     private boolean balanceClasses;
     private boolean includeEmpty;
-    private boolean removeOutliers;
-    private boolean saveArff;
     private boolean saveModel;
-    private boolean saveSets;
-    private boolean mailResults;
-
-    // e-mail settings
-    private String sender;
-    private String recipients;
-    private String host;
-    private CryptoProtocol protocol;
-    private String username;
-    private String password;
+    private boolean saveArff;
 
     public String getMetadataPath()
     {
@@ -84,27 +70,17 @@ public class Configuration
         this.runs = runs;
     }
 
-    public boolean isSkipTrain()
+    public boolean shouldLoadArff()
     {
-        return skipTrain;
+        return loadArff;
     }
 
-    public void setSkipTrain(boolean skipTrain)
+    public void setLoadArff(boolean loadArff)
     {
-        this.skipTrain = skipTrain;
+        this.loadArff = loadArff;
     }
 
-    public boolean isSkipTest()
-    {
-        return skipTest;
-    }
-
-    public void setSkipTest(boolean skipTest)
-    {
-        this.skipTest = skipTest;
-    }
-
-    public boolean isShrinkFeatures()
+    public boolean shouldShrinkFeatures()
     {
         return shrinkFeatures;
     }
@@ -114,7 +90,7 @@ public class Configuration
         this.shrinkFeatures = shrinkFeatures;
     }
 
-    public boolean isBalanceClasses()
+    public boolean shouldBalanceClasses()
     {
         return balanceClasses;
     }
@@ -124,7 +100,7 @@ public class Configuration
         this.balanceClasses = balanceClasses;
     }
 
-    public boolean isIncludeEmpty()
+    public boolean shouldIncludeEmpty()
     {
         return includeEmpty;
     }
@@ -134,27 +110,7 @@ public class Configuration
         this.includeEmpty = includeEmpty;
     }
 
-    public boolean isRemoveOutliers()
-    {
-        return removeOutliers;
-    }
-
-    public void setRemoveOutliers(boolean removeOutliers)
-    {
-        this.removeOutliers = removeOutliers;
-    }
-
-    public boolean isSaveArff()
-    {
-        return saveArff;
-    }
-
-    public void setSaveArff(boolean saveArff)
-    {
-        this.saveArff = saveArff;
-    }
-
-    public boolean isSaveModel()
+    public boolean shouldSaveModel()
     {
         return saveModel;
     }
@@ -164,83 +120,13 @@ public class Configuration
         this.saveModel = saveModel;
     }
 
-    public boolean isSaveSets()
+    public boolean shouldSaveArff()
     {
-        return saveSets;
+        return saveArff;
     }
 
-    public void setSaveSets(boolean saveSets)
+    public void setSaveArff(boolean saveArff)
     {
-        this.saveSets = saveSets;
-    }
-
-    public boolean isMailResults()
-    {
-        return mailResults;
-    }
-
-    public void setMailResults(boolean mailResults)
-    {
-        this.mailResults = mailResults;
-    }
-
-    public String getSender()
-    {
-        return sender;
-    }
-
-    public void setSender(String sender)
-    {
-        this.sender = sender;
-    }
-
-    public String getRecipients()
-    {
-        return recipients;
-    }
-
-    public void setRecipients(String recipients)
-    {
-        this.recipients = recipients;
-    }
-
-    public String getHost()
-    {
-        return host;
-    }
-
-    public void setHost(String host)
-    {
-        this.host = host;
-    }
-
-    public CryptoProtocol getProtocol()
-    {
-        return protocol;
-    }
-
-    public void setProtocol(CryptoProtocol protocol)
-    {
-        this.protocol = protocol;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
+        this.saveArff = saveArff;
     }
 }

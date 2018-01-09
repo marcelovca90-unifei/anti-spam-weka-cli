@@ -60,18 +60,23 @@ public class Runner
         for (DatasetMetadata metadata : datasetMetadata)
         {
             // read dataset from filesystem
-            Instances dataset = datasetHelper.loadDataset(metadata, false);
+            Instances dataset = datasetHelper.loadDataset(metadata, config.shouldLoadArff());
 
             // select attributes
-            dataset = datasetHelper.selectAttributes(dataset);
-            metadata.setNoFeaturesAfter(dataset.numAttributes() - 1);
+            if (config.shouldShrinkFeatures())
+            {
+                dataset = datasetHelper.selectAttributes(dataset);
+            }
+            metadata.setNumFeaturesAfterReduction(dataset.numAttributes() - 1);
 
             for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
             {
-                // create classifier and set its options
+                // parse the classifier class name and options
                 String className = classNameAndOptions.getLeft();
                 String options = classNameAndOptions.getRight();
-                Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+
+                // build the classifier
+                Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
                 // add logger for this method
                 evaluationHelper.addAppender(classifier);
@@ -85,7 +90,10 @@ public class Runner
                     Instances datasetCopy = new Instances(dataset);
 
                     // balance
-                    datasetHelper.balance(datasetCopy, seed);
+                    if (config.shouldBalanceClasses())
+                    {
+                        datasetHelper.balance(datasetCopy, seed);
+                    }
 
                     // shuffle
                     datasetHelper.shuffle(datasetCopy, seed);
@@ -96,7 +104,10 @@ public class Runner
                     Instances testSet = datasets.getRight();
 
                     // add empty instances
-                    datasetHelper.addEmptyInstances(testSet, metadata);
+                    if (config.shouldIncludeEmpty())
+                    {
+                        datasetHelper.addEmptyInstances(testSet, metadata);
+                    }
 
                     // create evaluation object
                     TimedEvaluation evaluation = new TimedEvaluation(testSet);
@@ -115,6 +126,13 @@ public class Runner
                     evaluationHelper.compute(classifier, evaluation);
                     evaluationHelper.print(metadata, classifier);
 
+                    // persist model
+                    if (config.shouldSaveModel())
+                    {
+                        String filename = String.format("%s/%s_%s.model", metadata.getFolder(), className, seed);
+                        weka.core.SerializationHelper.write(filename, classifier);
+                    }
+
                     // update random number generator seed
                     seed = Primes.nextPrime(seed + 1);
                 }
@@ -127,7 +145,10 @@ public class Runner
             }
 
             // save to arff
-            datasetHelper.saveToArff(metadata, dataset);
+            if (config.shouldSaveArff())
+            {
+                datasetHelper.saveToArff(metadata, dataset);
+            }
         }
     }
 
