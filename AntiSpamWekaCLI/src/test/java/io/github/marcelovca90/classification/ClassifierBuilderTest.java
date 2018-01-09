@@ -24,23 +24,39 @@ package io.github.marcelovca90.classification;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.data.DatasetMetadata;
 import weka.classifiers.Classifier;
 
-@RunWith (MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ClassifierBuilderTest
 {
     private String className;
     private String options;
     private Classifier classifier;
 
+    @Mock
+    private DatasetMetadata metadata;
+
     @InjectMocks
     private ClassifierBuilder classifierBuilder;
+
+    @Before
+    public void setUp()
+    {
+        when(metadata.getNumInstances()).thenReturn(100);
+        when(metadata.getNumFeaturesBeforeReduction()).thenReturn(16);
+        when(metadata.getNumFeaturesAfterReduction()).thenReturn(8);
+        when(metadata.getNumClasses()).thenReturn(2);
+    }
 
     @Test
     public void build_unknownClassValidOptions_shouldReturnNullClassifier()
@@ -50,7 +66,7 @@ public class ClassifierBuilderTest
         options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
-        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+        classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
         // then
         assertThat(classifier, nullValue());
@@ -64,7 +80,7 @@ public class ClassifierBuilderTest
         options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
-        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+        classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
         // then
         assertThat(classifier, nullValue());
@@ -78,7 +94,7 @@ public class ClassifierBuilderTest
         options = "-I 1 -E 1.0 -S 1 -M 10000 -FOO bar";
 
         // when
-        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+        classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
         // then
         assertThat(classifier, notNullValue());
@@ -92,9 +108,44 @@ public class ClassifierBuilderTest
         String options = "-I 1 -E 1.0 -S 1 -M 10000";
 
         // when
-        classifier = classifierBuilder.withClassName(className).withOptions(options).build();
+        classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
         // then
         assertThat(classifier, notNullValue());
+    }
+
+    @Test
+    public void build_validClassCustomOptions_shouldReturnNotNullClassifier()
+    {
+        // given
+        String[] classNames = new String[] {
+                "weka.classifiers.functions.LibLINEAR",
+                "weka.classifiers.functions.LibLINEAR",
+                "weka.classifiers.functions.LibSVM",
+                "weka.classifiers.functions.LibSVM",
+                "weka.classifiers.functions.MultilayerPerceptron",
+                "weka.classifiers.functions.MultilayerPerceptron",
+                "weka.classifiers.functions.RBFNetwork",
+                "weka.classifiers.functions.RBFNetwork"
+        };
+        String[] options = new String[] {
+                "-S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000",
+                "-S 1 -C auto -E 0.001 -B 1.0 -L 0.1 -I 1000",
+                "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C 1.0 -E 0.001 -P 0.1 -H -seed 1",
+                "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C auto -E 0.001 -P 0.1 -H -seed 1",
+                "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a",
+                "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H auto",
+                "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1",
+                "-B auto -S 1 -R 1.0E-8 -M -1 -W 0.1"
+        };
+
+        for (int i = 0; i < 8; i++)
+        {
+            // when
+            classifier = classifierBuilder.withClassName(classNames[i]).withOptions(options[i]).customize(metadata).build();
+
+            // then
+            assertThat(classifier, notNullValue());
+        }
     }
 }
