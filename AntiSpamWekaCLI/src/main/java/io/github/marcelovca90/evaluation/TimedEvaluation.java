@@ -38,15 +38,6 @@ public class TimedEvaluation extends Evaluation
         super(data);
     }
 
-    public TimedEvaluation(Instances data, long trainStart, long trainEnd, long testStart, long testEnd) throws Exception
-    {
-        super(data);
-        this.trainStart = trainStart;
-        this.trainEnd = trainEnd;
-        this.testStart = testStart;
-        this.testEnd = testEnd;
-    }
-
     public void markTrainStart()
     {
         this.trainStart = System.currentTimeMillis();
@@ -75,31 +66,5 @@ public class TimedEvaluation extends Evaluation
     public long testingTime()
     {
         return Math.abs(testEnd - testStart);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + (int) (testEnd ^ (testEnd >>> 32));
-        result = prime * result + (int) (testStart ^ (testStart >>> 32));
-        result = prime * result + (int) (trainEnd ^ (trainEnd >>> 32));
-        result = prime * result + (int) (trainStart ^ (trainStart >>> 32));
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj) return true;
-        if (!super.equals(obj)) return false;
-        if (getClass() != obj.getClass()) return false;
-        TimedEvaluation other = (TimedEvaluation) obj;
-        if (testEnd != other.testEnd) return false;
-        if (testStart != other.testStart) return false;
-        if (trainEnd != other.trainEnd) return false;
-        if (trainStart != other.trainStart) return false;
-        return super.equals(obj);
     }
 }
