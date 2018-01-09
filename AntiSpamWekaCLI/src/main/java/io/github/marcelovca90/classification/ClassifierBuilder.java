@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import io.github.marcelovca90.data.DatasetMetadata;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Utils;
 
 public class ClassifierBuilder
@@ -52,7 +51,7 @@ public class ClassifierBuilder
 
     public ClassifierBuilder customize(DatasetMetadata metadata)
     {
-        if (className.endsWith("LibSVM") && StringUtils.containsIgnoreCase(options, "-C auto"))
+        if ((className.endsWith("LibLINEAR") || className.endsWith("LibSVM")) && StringUtils.containsIgnoreCase(options, "-C auto"))
         {
             double C = Math.sqrt(metadata.getNumInstances() * (metadata.getNumFeaturesAfterReduction() - 1) + metadata.getNumClasses());
             options = options.replace("-C auto", String.format("-C %.1f", C));
@@ -80,12 +79,6 @@ public class ClassifierBuilder
             Class<?> clazz = Class.forName(className);
             classifier = (AbstractClassifier) clazz.newInstance();
             classifier.setOptions(Utils.splitOptions(options));
-
-            if (classifier instanceof MultilayerPerceptron)
-            {
-                MultilayerPerceptron mlp = (MultilayerPerceptron) classifier;
-                LOGGER.debug("mlp.getHiddenLayers() = [{}]", mlp.getHiddenLayers());
-            }
         }
         catch (ClassNotFoundException e)
         {
