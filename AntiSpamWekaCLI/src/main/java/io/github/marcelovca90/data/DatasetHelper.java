@@ -51,6 +51,7 @@ import weka.attributeSelection.ASEvaluation;
 import weka.attributeSelection.ASSearch;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.MultiObjectiveEvolutionarySearch;
+import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -242,6 +243,19 @@ public class DatasetHelper
             {
                 LOGGER.error("Unable to save ARFF file " + filename + ".", e);
             }
+        }
+    }
+
+    public void saveModel(DatasetMetadata metadata, Classifier classifier, int seed)
+    {
+        String filename = String.format("%s/%s_%s.model", metadata.getFolder(), classifier.getClass().getSimpleName(), seed);
+        try
+        {
+            weka.core.SerializationHelper.write(filename, classifier);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Unable to save model file " + filename + ".", e);
         }
     }
 

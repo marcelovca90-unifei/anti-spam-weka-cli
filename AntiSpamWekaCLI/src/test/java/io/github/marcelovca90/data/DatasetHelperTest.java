@@ -27,6 +27,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +45,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -219,16 +222,16 @@ public class DatasetHelperTest
     {
         // given
         Instances dataset = datasetHelper.loadDataset(metadata8, false);
-        int hamCountBefore = count(dataset, ClassType.HAM);
-        int spamCountBefore = count(dataset, ClassType.SPAM);
+        int hamCountBefore = countMessagesByType(dataset, ClassType.HAM);
+        int spamCountBefore = countMessagesByType(dataset, ClassType.SPAM);
 
         // when
         datasetHelper.balance(dataset, 0);
 
         // then
         assertThat(dataset, notNullValue());
-        int hamCountAfter = count(dataset, ClassType.HAM);
-        int spamCountAfter = count(dataset, ClassType.SPAM);
+        int hamCountAfter = countMessagesByType(dataset, ClassType.HAM);
+        int spamCountAfter = countMessagesByType(dataset, ClassType.SPAM);
         assertThat(hamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
         assertThat(spamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
     }
@@ -323,7 +326,37 @@ public class DatasetHelperTest
         assertThat(Files.exists(Paths.get(metadata32.getArffFilename())), equalTo(false));
     }
 
-    private int count(Instances dataset, ClassType classType)
+    @Test
+    public void saveModel_invalidClassifier_shouldNotPersistModel() throws URISyntaxException
+    {
+        // given
+        Classifier classifier = mock(Classifier.class);
+        int seed = 7919;
+
+        // when
+        datasetHelper.saveModel(metadata8, classifier, seed);
+
+        // then
+        String filename = metadata8.getFolder() + File.separator + "Classifier_7919.model";
+        assertThat(Files.exists(Paths.get(filename)), equalTo(false));
+    }
+
+    @Test
+    public void saveModel_validClassifier_shouldPersistModel() throws URISyntaxException
+    {
+        // given
+        Classifier classifier = new MultilayerPerceptron();
+        int seed = 7919;
+
+        // when
+        datasetHelper.saveModel(metadata8, classifier, seed);
+
+        // then
+        String filename = metadata8.getFolder() + File.separator + "MultilayerPerceptron_7919.model";
+        assertThat(Files.exists(Paths.get(filename)), equalTo(true));
+    }
+
+    private int countMessagesByType(Instances dataset, ClassType classType)
     {
         return (int) dataset.stream().filter(i -> i.classValue() == classType.ordinal()).count();
     }

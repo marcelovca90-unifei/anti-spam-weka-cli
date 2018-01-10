@@ -129,8 +129,7 @@ public class Runner
                     // persist model
                     if (config.shouldSaveModel())
                     {
-                        String filename = String.format("%s/%s_%s.model", metadata.getFolder(), className, seed);
-                        weka.core.SerializationHelper.write(filename, classifier);
+                        datasetHelper.saveModel(metadata, classifier, seed);
                     }
 
                     // update random number generator seed
