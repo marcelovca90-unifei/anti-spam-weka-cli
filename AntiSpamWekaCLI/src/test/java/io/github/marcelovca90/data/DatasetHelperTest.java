@@ -57,6 +57,7 @@ public class DatasetHelperTest
     private final DatasetMetadata metadata8 = buildMetadata("dataset/method/8", 0, 19);
     private final DatasetMetadata metadata16 = buildMetadata("dataset/method/16", 0, 17);
     private final DatasetMetadata metadata32 = buildMetadata("dataset/method/32", 0, 3);
+    private final DatasetMetadata metadata64 = buildMetadata("dataset/method/64", 0, 3);
 
     @InjectMocks
     private DatasetHelper datasetHelper;
@@ -218,10 +219,29 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void balance_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
+    public void balance_lessSpam_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
     {
         // given
-        Instances dataset = datasetHelper.loadDataset(metadata8, false);
+        Instances dataset = datasetHelper.loadDataset(metadata64, false);
+        int hamCountBefore = countMessagesByType(dataset, ClassType.HAM);
+        int spamCountBefore = countMessagesByType(dataset, ClassType.SPAM);
+
+        // when
+        datasetHelper.balance(dataset, 0);
+
+        // then
+        assertThat(dataset, notNullValue());
+        int hamCountAfter = countMessagesByType(dataset, ClassType.HAM);
+        int spamCountAfter = countMessagesByType(dataset, ClassType.SPAM);
+        assertThat(hamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
+        assertThat(spamCountAfter, equalTo(Math.max(hamCountBefore, spamCountBefore)));
+    }
+
+    @Test
+    public void balance_lessHam_datasetShouldHaveSameAmountsOfEachClass() throws URISyntaxException
+    {
+        // given
+        Instances dataset = datasetHelper.loadDataset(metadata64, true);
         int hamCountBefore = countMessagesByType(dataset, ClassType.HAM);
         int spamCountBefore = countMessagesByType(dataset, ClassType.SPAM);
 
@@ -297,7 +317,7 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void saveToArff_null() throws URISyntaxException
+    public void saveToArff_outputDoesExist_shouldPersistArff() throws URISyntaxException
     {
         // given
         Instances dataset = datasetHelper.loadDataset(metadata8, false);
@@ -310,7 +330,7 @@ public class DatasetHelperTest
     }
 
     @Test
-    public void saveToArff_notNull() throws URISyntaxException
+    public void saveToArff_outputDoesNotExist_shouldPersistArff() throws URISyntaxException
     {
         // given
         Instances dataset = datasetHelper.loadDataset(metadata32, false);

@@ -154,9 +154,9 @@ public class DatasetHelper
         if (hamCount < spamCount)
             for (int i = 0; i < spamCount - hamCount; i++)
                 dataset.add(dataset.get(random.nextInt(hamCount)));
-        else if (spamCount < hamCount)
+        else
             for (int i = 0; i < hamCount - spamCount; i++)
-            dataset.add(dataset.get(hamCount + random.nextInt(spamCount)));
+                dataset.add(dataset.get(hamCount + random.nextInt(spamCount)));
     }
 
     public Instances selectAttributes(Instances dataset)
