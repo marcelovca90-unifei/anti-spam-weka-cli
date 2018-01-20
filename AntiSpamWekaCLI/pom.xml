@@ -212,8 +212,8 @@
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>LibLINEAR-CJLin</artifactId>
-            <version>1.96-SNAPSHOT</version>
+            <artifactId>liblinear-java</artifactId>
+            <version>2.20</version>
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
