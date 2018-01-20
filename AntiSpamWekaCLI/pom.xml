@@ -222,7 +222,7 @@
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
-            <artifactId>LibSVM-CJLin</artifactId>
+            <artifactId>libsvm-java</artifactId>
             <version>3.22b</version>
         </dependency>
         <dependency>
