@@ -2,16 +2,16 @@
 
 Project of my master's degree in Computer Science ("Study and Research in Anti-Spam Systems").
 
-For instructions on how to clone, build and run the project, please refer to ["How To"](https://github.com/marcelovca90/anti-spam-weka-cli/blob/master/HOW-TO.md).
+For instructions on how to clone, build and run the project, please refer to ["this guide"](https://github.com/marcelovca90/anti-spam-weka-data/blob/master/README.md).
 
 - - - -
 
 Machine learning library:
 - [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)
 
-Data sets:
-- [2017_BASE2](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_BASE2) (with 8, 16, 32, 64, 128, 256, 512 and 1024 features - CHI2, DF and MI)
-- [2017_MULT10](https://github.com/marcelovca90/anti-spam-weka-data/tree/master/2017_MULT10) (with 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100 features - CHI2, DF and MI)
+Data sets information:
+- Repository URL:
+- There are four data sets (Ling Spam, Spam Assassin, TREC and Unifei) available [here](https://github.com/marcelovca90/anti-spam-weka-data/). Each was pre-processed with three feature extraction methods ([CHI2](https://nlp.stanford.edu/IR-book/html/htmledition/feature-selectionchi2-feature-selection-1.html), [FD](https://nlp.stanford.edu/IR-book/html/htmledition/frequency-based-feature-selection-1.html) and [MI](https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html)), with eight different feature vector sizes (8, 16, 32, 64, 128, 256, 512 and 1024).
 
 Classification methods:
 - [A1DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 1-Dependence Estimator
@@ -40,10 +40,6 @@ Classification methods:
 - [WRF](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html) - Weka Random Forest
 
 Metrics:
-- Precision
-- Recall
-- Area under Precision-Recall Curve (PRC)
-- Area under Receiver Operating Characteristic (ROC)
-- F1 score (also known as F-score or F-measure)
-- Training time
-- Testing time
+- [Precision, recall and F1 score](https://en.wikipedia.org/wiki/Precision_and_recall)
+- Area under Precision-Recall (PR) and [Receiver Operating Characteristic (ROC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) curves
+- Training and testing times
