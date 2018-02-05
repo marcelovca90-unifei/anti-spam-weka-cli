@@ -79,6 +79,8 @@ public class ClassifierBuilder
             Class<?> clazz = Class.forName(className);
             classifier = (AbstractClassifier) clazz.newInstance();
             classifier.setOptions(Utils.splitOptions(options));
+
+            LOGGER.info("Bulit classifier \"{}\" with options \"{}\".", classifier, options);
         }
         catch (ClassNotFoundException e)
         {
