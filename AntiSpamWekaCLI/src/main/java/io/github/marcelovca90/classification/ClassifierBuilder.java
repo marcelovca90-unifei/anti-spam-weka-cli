@@ -80,7 +80,7 @@ public class ClassifierBuilder
             classifier = (AbstractClassifier) clazz.newInstance();
             classifier.setOptions(Utils.splitOptions(options));
 
-            LOGGER.info("Bulit classifier \"{}\" with options \"{}\".", classifier, options);
+            LOGGER.info("Built classifier \"{}\" with options \"{}\".", className, options);
         }
         catch (ClassNotFoundException e)
         {

@@ -2,7 +2,7 @@
 
 Project of my master's degree in Computer Science ("Study and Research in Anti-Spam Systems").  
 
-For instructions on how to clone, build and run the project, please refer to ["this guide"](https://github.com/marcelovca90/anti-spam-weka-data/blob/master/README.md).  
+For instructions on how to clone, build and run the project, please refer to [this guide](https://github.com/marcelovca90/anti-spam-weka-data/blob/master/README.md).  
 
 - - - -  
 
@@ -10,7 +10,7 @@ Machine learning library:
 - [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)  
 
 Data sets information:  
-- There are four data sets ([Ling Spam](https://labs-repos.iit.demokritos.gr/skel/i-config/downloads/), [Spam Assassin](https://spamassassin.apache.org/old/publiccorpus/), TREC ([2005](https://plg.uwaterloo.ca/~gvcormac/treccorpus/), [2006](https://plg.uwaterloo.ca/~gvcormac/treccorpus06/) and [2007](http://plg.uwaterloo.ca/~gvcormac/treccorpus07/)) and [Unifei](http://www.gpesc.unifei.edu.br/)) available [here](https://github.com/marcelovca90/anti-spam-weka-data/). Each was pre-processed with three feature extraction methods ([CHI2](https://nlp.stanford.edu/IR-book/html/htmledition/feature-selectionchi2-feature-selection-1.html), [FD](https://nlp.stanford.edu/IR-book/html/htmledition/frequency-based-feature-selection-1.html) and [MI](https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html)), with eight different feature vector sizes (8, 16, 32, 64, 128, 256, 512 and 1024).  
+- There are four data sets ([Ling Spam](https://labs-repos.iit.demokritos.gr/skel/i-config/downloads/), [Spam Assassin](https://spamassassin.apache.org/old/publiccorpus/), TREC ([2005](https://plg.uwaterloo.ca/~gvcormac/treccorpus/), [2006](https://plg.uwaterloo.ca/~gvcormac/treccorpus06/) and [2007](http://plg.uwaterloo.ca/~gvcormac/treccorpus07/)) and [Unifei](http://www.gpesc.unifei.edu.br/)) available [here](https://github.com/marcelovca90/anti-spam-weka-data/). Each was pre-processed with three feature extraction methods ([CHI2](https://nlp.stanford.edu/IR-book/html/htmledition/feature-selectionchi2-feature-selection-1.html), [FD](https://nlp.stanford.edu/IR-book/html/htmledition/frequency-based-feature-selection-1.html) and [MI](https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html)) and eight different feature vector sizes (8, 16, 32, 64, 128, 256, 512 and 1024).  
 
 Classification methods:  
 - [A1DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 1-Dependence Estimator  
