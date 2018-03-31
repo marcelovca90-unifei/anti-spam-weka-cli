@@ -24,7 +24,7 @@ public class TsneAnalyserTest
     private TsneAnalyser tsneAnalyser;
 
     @Test
-    public void test() throws Exception
+    public void run_withArtificialDataset_shouldNotThrowException() throws Exception
     {
         // given
         when(metadata.getFolder()).thenReturn(FilenameUtils.separatorsToSystem("dataset/method/8"));
