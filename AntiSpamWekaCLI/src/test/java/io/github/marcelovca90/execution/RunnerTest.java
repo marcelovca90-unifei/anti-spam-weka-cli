@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,6 +45,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.github.marcelovca90.analysis.TsneAnalyser;
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
 import io.github.marcelovca90.configuration.ConfigurationLoader;
@@ -66,6 +68,9 @@ public class RunnerTest
     private DatasetHelper datasetHelper;
 
     @Mock
+    private TsneAnalyser tsneAnalyser;
+
+    @Mock
     private ClassifierBuilder classifierBuilder;
 
     @Mock
@@ -81,7 +86,7 @@ public class RunnerTest
     public void main_falseConfiguration_shouldNotCallMethods() throws Exception
     {
         // given
-        mockCalls(2, false, false, false, false, false);
+        mockCalls(2, false, false, false, false, false, false);
 
         // when
         runner.run();
@@ -94,7 +99,7 @@ public class RunnerTest
     public void main_trueConfiguration_shouldCallMethods() throws Exception
     {
         // given
-        mockCalls(2, true, true, true, true, true);
+        mockCalls(2, false, true, true, true, true, true);
 
         // when
         runner.run();
@@ -103,7 +108,20 @@ public class RunnerTest
         verifyCalls(true, true, true, true, true);
     }
 
-    private void mockCalls(int runs, boolean shrink, boolean balance, boolean addEmpty, boolean saveModel, boolean saveArff) throws URISyntaxException
+    @Test
+    public void main_tsneConfiguration_shouldCallMethods() throws Exception
+    {
+        // given
+        mockCalls(2, true, false, false, false, false, false);
+
+        // when
+        runner.run();
+
+        // then
+        verify(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class));
+    }
+
+    private void mockCalls(int runs, boolean tsne, boolean shrink, boolean balance, boolean addEmpty, boolean saveModel, boolean saveArff) throws URISyntaxException
     {
         String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
@@ -114,6 +132,7 @@ public class RunnerTest
         when(configuration.getClassNamesAndOptions()).thenReturn(classNamesAndOptions);
         when(configuration.getMetadataPath()).thenReturn(filename);
         when(configuration.getRuns()).thenReturn(runs);
+        when(configuration.isTsneAnalysis()).thenReturn(tsne);
         when(configuration.shouldShrinkFeatures()).thenReturn(shrink);
         when(configuration.shouldBalanceClasses()).thenReturn(balance);
         when(configuration.shouldIncludeEmpty()).thenReturn(addEmpty);
@@ -131,10 +150,18 @@ public class RunnerTest
         when(datasetHelper.loadDataset(any(DatasetMetadata.class), anyBoolean())).thenCallRealMethod();
         if (shrink) when(datasetHelper.selectAttributes(any(Instances.class))).thenCallRealMethod();
         when(datasetHelper.split(any(Instances.class), anyDouble())).thenCallRealMethod();
+
+        doNothing().when(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class));
     }
 
     private void verifyCalls(boolean shrink, boolean balance, boolean addEmpty, boolean saveModel, boolean saveArff)
     {
+        verify(datasetHelper, shrink ? times(1) : never()).selectAttributes(any(Instances.class));
+        verify(datasetHelper, balance ? times(4) : never()).balance(any(Instances.class), anyInt());
+        verify(datasetHelper, addEmpty ? times(4) : never()).addEmptyInstances(any(Instances.class), any(DatasetMetadata.class));
+        verify(datasetHelper, saveModel ? times(4) : never()).saveModel(any(DatasetMetadata.class), any(Classifier.class), anyInt());
+        verify(datasetHelper, saveArff ? times(1) : never()).saveToArff(any(DatasetMetadata.class), any(Instances.class));
+
         verify(classifierBuilder, times(2)).withClassName(anyString());
         verify(classifierBuilder, times(2)).withOptions(anyString());
         verify(classifierBuilder, times(2)).build();
@@ -145,10 +172,6 @@ public class RunnerTest
         verify(evaluationHelper, times(2)).summarize(any(DatasetMetadata.class), any(Classifier.class));
         verify(evaluationHelper, times(2)).removeAppender(any(Classifier.class));
 
-        verify(datasetHelper, shrink ? times(1) : never()).selectAttributes(any(Instances.class));
-        verify(datasetHelper, balance ? times(4) : never()).balance(any(Instances.class), anyInt());
-        verify(datasetHelper, addEmpty ? times(4) : never()).addEmptyInstances(any(Instances.class), any(DatasetMetadata.class));
-        verify(datasetHelper, saveModel ? times(4) : never()).saveModel(any(DatasetMetadata.class), any(Classifier.class), anyInt());
-        verify(datasetHelper, saveArff ? times(1) : never()).saveToArff(any(DatasetMetadata.class), any(Instances.class));
+        verify(tsneAnalyser, never()).run(any(DatasetMetadata.class), any(Instances.class));
     }
 }
