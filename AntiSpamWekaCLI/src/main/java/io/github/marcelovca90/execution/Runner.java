@@ -26,6 +26,7 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.primes.Primes;
 
+import io.github.marcelovca90.analysis.TsneAnalyser;
 import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.configuration.Configuration;
 import io.github.marcelovca90.configuration.ConfigurationLoader;
@@ -40,6 +41,7 @@ public class Runner
 {
     private ConfigurationLoader configLoader;
     private DatasetHelper datasetHelper;
+    private TsneAnalyser tsneAnalyser;
     private ClassifierBuilder classifierBuilder;
     private EvaluationHelper evaluationHelper;
 
@@ -47,6 +49,7 @@ public class Runner
     {
         configLoader = new ConfigurationLoader();
         datasetHelper = new DatasetHelper();
+        tsneAnalyser = new TsneAnalyser();
         classifierBuilder = new ClassifierBuilder();
         evaluationHelper = new EvaluationHelper();
     }
@@ -62,91 +65,100 @@ public class Runner
             // read dataset from filesystem
             Instances dataset = datasetHelper.loadDataset(metadata, config.shouldLoadArff());
 
-            // select attributes
-            if (config.shouldShrinkFeatures())
+            // check if it is a t-SNE analysis
+            if (config.isTsneAnalysis())
             {
-                dataset = datasetHelper.selectAttributes(dataset);
+                tsneAnalyser.run(metadata, dataset);
             }
-            metadata.setNumFeaturesAfterReduction(dataset.numAttributes() - 1);
-
-            for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
+            // otherwise, it is a train/run execution
+            else
             {
-                // parse the classifier class name and options
-                String className = classNameAndOptions.getLeft();
-                String options = classNameAndOptions.getRight();
-
-                // build the classifier
-                Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
-
-                // add logger for this method
-                evaluationHelper.addAppender(classifier);
-
-                // initialize random number generator seed
-                int seed = 2;
-
-                // run {config.getRuns()} executions
-                for (int run = 0; run < config.getRuns(); run++)
+                // select attributes
+                if (config.shouldShrinkFeatures())
                 {
-                    Instances datasetCopy = new Instances(dataset);
+                    dataset = datasetHelper.selectAttributes(dataset);
+                }
+                metadata.setNumFeaturesAfterReduction(dataset.numAttributes() - 1);
 
-                    // balance
-                    if (config.shouldBalanceClasses())
+                for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
+                {
+                    // parse the classifier class name and options
+                    String className = classNameAndOptions.getLeft();
+                    String options = classNameAndOptions.getRight();
+
+                    // build the classifier
+                    Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
+
+                    // add logger for this method
+                    evaluationHelper.addAppender(classifier);
+
+                    // initialize random number generator seed
+                    int seed = 2;
+
+                    // run {config.getRuns()} executions
+                    for (int run = 0; run < config.getRuns(); run++)
                     {
-                        datasetHelper.balance(datasetCopy, seed);
+                        Instances datasetCopy = new Instances(dataset);
+
+                        // balance
+                        if (config.shouldBalanceClasses())
+                        {
+                            datasetHelper.balance(datasetCopy, seed);
+                        }
+
+                        // shuffle
+                        datasetHelper.shuffle(datasetCopy, seed);
+
+                        // split
+                        Pair<Instances, Instances> datasets = datasetHelper.split(datasetCopy, 0.5);
+                        Instances trainSet = datasets.getLeft();
+                        Instances testSet = datasets.getRight();
+
+                        // add empty instances
+                        if (config.shouldIncludeEmpty())
+                        {
+                            datasetHelper.addEmptyInstances(testSet, metadata);
+                        }
+
+                        // create evaluation object
+                        TimedEvaluation evaluation = new TimedEvaluation(testSet);
+
+                        // train
+                        evaluation.markTrainStart();
+                        classifier.buildClassifier(trainSet);
+                        evaluation.markTrainEnd();
+
+                        // test
+                        evaluation.markTestStart();
+                        evaluation.evaluateModel(classifier, testSet);
+                        evaluation.markTestEnd();
+
+                        // evaluate single execution
+                        evaluationHelper.compute(classifier, evaluation);
+                        evaluationHelper.print(metadata, classifier);
+
+                        // persist model
+                        if (config.shouldSaveModel())
+                        {
+                            datasetHelper.saveModel(metadata, classifier, seed);
+                        }
+
+                        // update random number generator seed
+                        seed = Primes.nextPrime(seed + 1);
                     }
 
-                    // shuffle
-                    datasetHelper.shuffle(datasetCopy, seed);
+                    // evaluate all executions for this method
+                    evaluationHelper.summarize(metadata, classifier);
 
-                    // split
-                    Pair<Instances, Instances> datasets = datasetHelper.split(datasetCopy, 0.5);
-                    Instances trainSet = datasets.getLeft();
-                    Instances testSet = datasets.getRight();
-
-                    // add empty instances
-                    if (config.shouldIncludeEmpty())
-                    {
-                        datasetHelper.addEmptyInstances(testSet, metadata);
-                    }
-
-                    // create evaluation object
-                    TimedEvaluation evaluation = new TimedEvaluation(testSet);
-
-                    // train
-                    evaluation.markTrainStart();
-                    classifier.buildClassifier(trainSet);
-                    evaluation.markTrainEnd();
-
-                    // test
-                    evaluation.markTestStart();
-                    evaluation.evaluateModel(classifier, testSet);
-                    evaluation.markTestEnd();
-
-                    // evaluate single execution
-                    evaluationHelper.compute(classifier, evaluation);
-                    evaluationHelper.print(metadata, classifier);
-
-                    // persist model
-                    if (config.shouldSaveModel())
-                    {
-                        datasetHelper.saveModel(metadata, classifier, seed);
-                    }
-
-                    // update random number generator seed
-                    seed = Primes.nextPrime(seed + 1);
+                    // remove logger for this method
+                    evaluationHelper.removeAppender(classifier);
                 }
 
-                // evaluate all executions for this method
-                evaluationHelper.summarize(metadata, classifier);
-
-                // remove logger for this method
-                evaluationHelper.removeAppender(classifier);
-            }
-
-            // save to arff
-            if (config.shouldSaveArff())
-            {
-                datasetHelper.saveToArff(metadata, dataset);
+                // save to arff
+                if (config.shouldSaveArff())
+                {
+                    datasetHelper.saveToArff(metadata, dataset);
+                }
             }
         }
     }

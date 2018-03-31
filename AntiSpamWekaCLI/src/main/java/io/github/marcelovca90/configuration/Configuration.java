@@ -33,6 +33,7 @@ public class Configuration
     private int runs;
 
     // run settings
+    private boolean tsneAnalysis;
     private boolean loadArff;
     private boolean shrinkFeatures;
     private boolean balanceClasses;
@@ -68,6 +69,16 @@ public class Configuration
     public void setRuns(int runs)
     {
         this.runs = runs;
+    }
+
+    public boolean isTsneAnalysis()
+    {
+        return tsneAnalysis;
+    }
+
+    public void setTsneAnalysis(boolean tsneAnalysis)
+    {
+        this.tsneAnalysis = tsneAnalysis;
     }
 
     public boolean shouldLoadArff()

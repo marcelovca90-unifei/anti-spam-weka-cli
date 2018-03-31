@@ -34,6 +34,7 @@ public class ConfigurationLoader
             config.setRuns(Integer.parseInt(prop.getProperty("runs")));
 
             // run settings
+            config.setTsneAnalysis(Boolean.parseBoolean(prop.getProperty("tsneAnalysis")));
             config.setLoadArff(Boolean.parseBoolean(prop.getProperty("loadArff")));
             config.setShrinkFeatures(Boolean.parseBoolean(prop.getProperty("shrinkFeatures")));
             config.setBalanceClasses(Boolean.parseBoolean(prop.getProperty("balanceClasses")));
