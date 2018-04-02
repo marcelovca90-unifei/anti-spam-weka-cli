@@ -7,6 +7,7 @@ public class DatasetMetadata
 {
     private String folder;
     private String arffFilename;
+    private String tsneFilename;
     private String name;
     private String featureSelecion;
     private int numClasses;
@@ -24,6 +25,11 @@ public class DatasetMetadata
     public String getArffFilename()
     {
         return arffFilename;
+    }
+
+    public String getTsneFilename()
+    {
+        return tsneFilename;
     }
 
     public String getName()
@@ -85,6 +91,7 @@ public class DatasetMetadata
     {
         this.folder = folder;
         this.arffFilename = folder + File.separator + "data.arff";
+        this.tsneFilename = folder + File.separator + "t-SNE.png";
         this.numEmptyHams = emptyHamAmount;
         this.numEmptySpams = emptySpamAmount;
 

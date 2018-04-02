@@ -1,7 +1,6 @@
 package io.github.marcelovca90.analysis;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 
@@ -19,7 +18,6 @@ import com.jujutsu.tsne.barneshut.BarnesHutTSne;
 import com.jujutsu.tsne.barneshut.ParallelBHTsne;
 import com.jujutsu.utils.TSneUtils;
 
-import io.github.marcelovca90.classification.ClassifierBuilder;
 import io.github.marcelovca90.data.ClassType;
 import io.github.marcelovca90.data.DatasetMetadata;
 import weka.core.Instance;
@@ -27,14 +25,14 @@ import weka.core.Instances;
 
 public class TsneAnalyser
 {
-    private static final Logger LOGGER = LogManager.getLogger(ClassifierBuilder.class);
+    private static final Logger LOGGER = LogManager.getLogger(TsneAnalyser.class);
 
     private double[][] X;
     private ClassType[] labels;
     private int hamCount;
     private int spamCount;
 
-    public void run(DatasetMetadata metadata, Instances dataset)
+    public void run(DatasetMetadata metadata, Instances dataset, boolean multithread)
     {
         // initialize variables
         X = new double[dataset.numInstances()][];
@@ -49,7 +47,7 @@ public class TsneAnalyser
 
         // prepare t-SNE
         prepareInputAndLabels(dataset);
-        BarnesHutTSne tsne = Runtime.getRuntime().availableProcessors() > 1 ? new ParallelBHTsne() : new BHTSne();
+        BarnesHutTSne tsne = multithread ? new ParallelBHTsne() : new BHTSne();
         TSneConfiguration config = TSneUtils.buildConfig(X, 2, initial_dims, perplexity, max_iter);
 
         // run t-SNE
@@ -77,7 +75,7 @@ public class TsneAnalyser
             }
         }
 
-        // create parent plot panel
+        // initialize parent plot panel
         Plot2DPanel plot = new Plot2DPanel();
         plot.addLegend("EAST");
 
@@ -101,12 +99,13 @@ public class TsneAnalyser
         plotframe.setVisible(false);
 
         // save plot image to filesystem
-        File outputFile = new File(metadata.getArffFilename().replace("data.arff", "t-SNE.png"));
+        File outputFile = null;
         try
         {
+            outputFile = new File(metadata.getTsneFilename());
             plot.toGraphicFile(outputFile);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             LOGGER.error("Could not save graphic file " + outputFile.getAbsolutePath() + ".", e);
         }

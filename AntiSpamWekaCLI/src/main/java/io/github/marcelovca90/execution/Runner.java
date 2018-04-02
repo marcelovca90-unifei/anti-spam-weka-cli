@@ -68,7 +68,7 @@ public class Runner
             // check if it is a t-SNE analysis
             if (config.isTsneAnalysis())
             {
-                tsneAnalyser.run(metadata, dataset);
+                tsneAnalyser.run(metadata, dataset, true);
             }
             // otherwise, it is a train/run execution
             else

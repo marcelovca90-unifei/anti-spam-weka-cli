@@ -118,7 +118,7 @@ public class RunnerTest
         runner.run();
 
         // then
-        verify(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class));
+        verify(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class), anyBoolean());
     }
 
     private void mockCalls(int runs, boolean tsne, boolean shrink, boolean balance, boolean addEmpty, boolean saveModel, boolean saveArff) throws URISyntaxException
@@ -151,7 +151,7 @@ public class RunnerTest
         if (shrink) when(datasetHelper.selectAttributes(any(Instances.class))).thenCallRealMethod();
         when(datasetHelper.split(any(Instances.class), anyDouble())).thenCallRealMethod();
 
-        doNothing().when(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class));
+        doNothing().when(tsneAnalyser).run(any(DatasetMetadata.class), any(Instances.class), anyBoolean());
     }
 
     private void verifyCalls(boolean shrink, boolean balance, boolean addEmpty, boolean saveModel, boolean saveArff)
@@ -172,6 +172,6 @@ public class RunnerTest
         verify(evaluationHelper, times(2)).summarize(any(DatasetMetadata.class), any(Classifier.class));
         verify(evaluationHelper, times(2)).removeAppender(any(Classifier.class));
 
-        verify(tsneAnalyser, never()).run(any(DatasetMetadata.class), any(Instances.class));
+        verify(tsneAnalyser, never()).run(any(DatasetMetadata.class), any(Instances.class), anyBoolean());
     }
 }

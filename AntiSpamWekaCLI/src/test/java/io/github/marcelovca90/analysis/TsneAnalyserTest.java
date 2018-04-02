@@ -28,30 +28,29 @@ public class TsneAnalyserTest
     private TsneAnalyser tsneAnalyser;
 
     @Test
-    public void run_withArtificialDataset_shouldNotThrowException() throws Exception
+    public void run_withValidOutputFilename_shouldNotThrowException() throws Exception
     {
         // given
         String filename = Paths.get(classLoader.getResource("dataset/method/8/data.arff").toURI()).toFile().getAbsolutePath();
-        when(metadata.getArffFilename()).thenReturn(FilenameUtils.separatorsToSystem(filename));
+        when(metadata.getTsneFilename()).thenReturn(FilenameUtils.separatorsToSystem(filename).replace("data.arff", "t-SNE.png"));
 
         // when
-        tsneAnalyser.run(metadata, generateRandomDataset());
+        tsneAnalyser.run(metadata, generateArtificialDataset(), true);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void run_withInexistentDataset_shouldThrowException() throws Exception
+    @Test(expected = Exception.class)
+    public void run_withInvalidOutputFilename_shouldThrowException() throws Exception
     {
         // given
-        String filename = Paths.get(classLoader.getResource("dataset/method/8/inexistentData.arff").toURI()).toFile().getAbsolutePath();
-        when(metadata.getArffFilename()).thenReturn(FilenameUtils.separatorsToSystem(filename));
+        when(metadata.getTsneFilename()).thenReturn(null);
 
         // when
-        tsneAnalyser.run(metadata, generateRandomDataset());
+        tsneAnalyser.run(metadata, generateArtificialDataset(), false);
 
         // then throw exception
     }
 
-    private Instances generateRandomDataset() throws Exception
+    private Instances generateArtificialDataset() throws Exception
     {
         RDG1 rdg1 = new RDG1();
 
