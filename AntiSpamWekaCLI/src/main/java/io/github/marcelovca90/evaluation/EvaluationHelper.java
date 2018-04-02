@@ -152,7 +152,7 @@ public class EvaluationHelper
 
     private String buildBodyPrefix(DatasetMetadata metadata, Classifier classifier)
     {
-        return String.format("%s\t%s\t%d\t%d\t%s", metadata.getName(), metadata.getFeatureSelecion(), metadata.getNumFeaturesBeforeReduction(), metadata.getNumFeaturesAfterReduction(), classifier.getClass().getSimpleName());
+        return String.format("%s\t%s\t%d\t%d\t%s", metadata.getName(), metadata.getFeatureSelection(), metadata.getNumFeaturesBeforeReduction(), metadata.getNumFeaturesAfterReduction(), classifier.getClass().getSimpleName());
     }
 
     private double confidenceInterval(DescriptiveStatistics statistics, double significance)

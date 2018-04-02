@@ -1,5 +1,6 @@
 package io.github.marcelovca90.configuration;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -12,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith (MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ConfigurationLoaderTest
 {
     private final ClassLoader classLoader = getClass().getClassLoader();
@@ -41,6 +42,18 @@ public class ConfigurationLoaderTest
 
         // then
         assertThat(configuration, notNullValue());
+        assertThat(configuration.getMetadataPath(), notNullValue());
+        assertThat(configuration.getClassNamesAndOptions(), notNullValue());
+        assertThat(configuration.getClassNamesAndOptions().size(), equalTo(2));
+        assertThat(configuration.getRuns(), equalTo(10));
+        assertThat(configuration.isTsneAnalysis(), equalTo(false));
+        assertThat(configuration.isTsneAnalysis(), equalTo(false));
+        assertThat(configuration.shouldLoadArff(), equalTo(false));
+        assertThat(configuration.shouldShrinkFeatures(), equalTo(true));
+        assertThat(configuration.shouldBalanceClasses(), equalTo(true));
+        assertThat(configuration.shouldIncludeEmpty(), equalTo(true));
+        assertThat(configuration.shouldSaveModel(), equalTo(false));
+        assertThat(configuration.shouldSaveArff(), equalTo(false));
     }
 
     @Test

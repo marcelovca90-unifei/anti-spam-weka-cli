@@ -88,18 +88,9 @@ public class DatasetHelperTest
         // then
         assertThat(metadata, notNullValue());
         assertThat(metadata.size(), equalTo(2));
-
         Iterator<DatasetMetadata> iterator = metadata.iterator();
-
-        DatasetMetadata next = iterator.next();
-        assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/8")));
-        assertThat(next.getNumEmptyHams(), equalTo(0));
-        assertThat(next.getNumEmptySpams(), equalTo(19));
-
-        next = iterator.next();
-        assertThat(next.getFolder(), equalTo(FilenameUtils.separatorsToSystem("dataset/method/32")));
-        assertThat(next.getNumEmptyHams(), equalTo(0));
-        assertThat(next.getNumEmptySpams(), equalTo(3));
+        assertFields(iterator.next(), FilenameUtils.separatorsToSystem("dataset/method/8"), 0, 19);
+        assertFields(iterator.next(), FilenameUtils.separatorsToSystem("dataset/method/32"), 0, 3);
     }
 
     @Test
@@ -395,5 +386,20 @@ public class DatasetHelperTest
             e.printStackTrace();
         }
         return metadata;
+    }
+
+    private void assertFields(DatasetMetadata metadata, String folder, int numEmptyHams, int numEmptySpams)
+    {
+        assertThat(metadata.getFolder(), equalTo(folder));
+        assertThat(metadata.getArffFilename(), notNullValue());
+        assertThat(metadata.getTsneFilename(), notNullValue());
+        assertThat(metadata.getName(), notNullValue());
+        assertThat(metadata.getFeatureSelection(), notNullValue());
+        assertThat(metadata.getNumClasses(), notNullValue());
+        assertThat(metadata.getNumInstances(), notNullValue());
+        assertThat(metadata.getNumFeaturesBeforeReduction(), notNullValue());
+        assertThat(metadata.getNumFeaturesAfterReduction(), notNullValue());
+        assertThat(metadata.getNumEmptyHams(), equalTo(numEmptyHams));
+        assertThat(metadata.getNumEmptySpams(), equalTo(numEmptySpams));
     }
 }

@@ -9,7 +9,7 @@ public class DatasetMetadata
     private String arffFilename;
     private String tsneFilename;
     private String name;
-    private String featureSelecion;
+    private String featureSelection;
     private int numClasses;
     private int numInstances;
     private int numFeaturesBeforeReduction;
@@ -37,9 +37,9 @@ public class DatasetMetadata
         return name;
     }
 
-    public String getFeatureSelecion()
+    public String getFeatureSelection()
     {
-        return featureSelecion;
+        return featureSelection;
     }
 
     public int getNumClasses()
@@ -97,7 +97,7 @@ public class DatasetMetadata
 
         String[] parts = folder.split(Pattern.quote(File.separator));
         this.name = parts[parts.length - 3];
-        this.featureSelecion = parts[parts.length - 2];
+        this.featureSelection = parts[parts.length - 2];
         this.numFeaturesBeforeReduction = Integer.parseInt(parts[parts.length - 1]);
         this.numFeaturesAfterReduction = this.numFeaturesBeforeReduction;
     }
