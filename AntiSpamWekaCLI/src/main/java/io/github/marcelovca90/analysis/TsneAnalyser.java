@@ -1,5 +1,6 @@
 package io.github.marcelovca90.analysis;
 
+import java.awt.Color;
 import java.io.File;
 
 import javax.swing.JFrame;
@@ -9,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.math.plot.FrameView;
 import org.math.plot.Plot2DPanel;
-import org.math.plot.PlotPanel;
 import org.math.plot.plots.ScatterPlot;
 
 import com.jujutsu.tsne.TSneConfiguration;
@@ -80,11 +80,13 @@ public class TsneAnalyser
         plot.addLegend("EAST");
 
         // prepare ham plot
-        ScatterPlot hamPlot = new ScatterPlot("ham", PlotPanel.COLORLIST[0], ham);
+        Color hamColor = new Color(0, 0, 255, 127);
+        ScatterPlot hamPlot = new ScatterPlot("ham", hamColor, ham);
         hamPlot.setTags(hamNames);
 
         // prepare spam plot
-        ScatterPlot spamPlot = new ScatterPlot("spam", PlotPanel.COLORLIST[1], spam);
+        Color spamColor = new Color(255, 0, 0, 127);
+        ScatterPlot spamPlot = new ScatterPlot("spam", spamColor, spam);
         spamPlot.setTags(spamNames);
 
         // add plots to canvas
