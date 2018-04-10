@@ -90,8 +90,8 @@ public class ClassifierBuilderTest
     public void build_validClassInvalidOptions_shouldReturnNullClassifier()
     {
         // given
-        className = "weka.classifiers.functions.VotedPerceptron";
-        options = "-I 1 -E 1.0 -S 1 -M 10000 -FOO bar";
+        className = "weka.classifiers.trees.RandomTree";
+        options = "-K 0 -M 1.0 -V 0.001 -S 1 -FOO bar";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
@@ -104,8 +104,8 @@ public class ClassifierBuilderTest
     public void build_validClassValidOptions_shouldReturnNotNullClassifier()
     {
         // given
-        String className = "weka.classifiers.functions.VotedPerceptron";
-        String options = "-I 1 -E 1.0 -S 1 -M 10000";
+        String className = "weka.classifiers.trees.RandomTree";
+        String options = "-K 0 -M 1.0 -V 0.001 -S 1";
 
         // when
         classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();

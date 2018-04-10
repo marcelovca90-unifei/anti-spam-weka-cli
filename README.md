@@ -10,7 +10,7 @@ Machine learning library:
 - [Weka (Waikato Environment for Knowledge Analysis)](http://www.cs.waikato.ac.nz/ml/weka/)  
 
 Data sets information:  
-- There are four data sets ([Ling Spam](https://labs-repos.iit.demokritos.gr/skel/i-config/downloads/), [Spam Assassin](https://spamassassin.apache.org/old/publiccorpus/), TREC ([2005](https://plg.uwaterloo.ca/~gvcormac/treccorpus/), [2006](https://plg.uwaterloo.ca/~gvcormac/treccorpus06/) and [2007](http://plg.uwaterloo.ca/~gvcormac/treccorpus07/)) and [Unifei](http://www.gpesc.unifei.edu.br/)) available [here](https://github.com/marcelovca90/anti-spam-weka-data/). Each was pre-processed with three feature extraction methods ([CHI2](https://nlp.stanford.edu/IR-book/html/htmledition/feature-selectionchi2-feature-selection-1.html), [FD](https://nlp.stanford.edu/IR-book/html/htmledition/frequency-based-feature-selection-1.html) and [MI](https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html)) and eight different feature vector sizes (8, 16, 32, 64, 128, 256, 512 and 1024).  
+- There are five data sets - [Ling Spam](https://labs-repos.iit.demokritos.gr/skel/i-config/downloads/), [Spam Assassin](https://spamassassin.apache.org/old/publiccorpus/), TREC ([2005](https://plg.uwaterloo.ca/~gvcormac/treccorpus/), [2006](https://plg.uwaterloo.ca/~gvcormac/treccorpus06/) and [2007](http://plg.uwaterloo.ca/~gvcormac/treccorpus07/)) and [Unifei](http://www.gpesc.unifei.edu.br/) (2017 and 2018) - available [here](https://github.com/marcelovca90/anti-spam-weka-data/). Each was pre-processed with three feature extraction methods ([CHI2](https://nlp.stanford.edu/IR-book/html/htmledition/feature-selectionchi2-feature-selection-1.html), [FD](https://nlp.stanford.edu/IR-book/html/htmledition/frequency-based-feature-selection-1.html) and [MI](https://nlp.stanford.edu/IR-book/html/htmledition/mutual-information-1.html)) and eight different feature vector sizes (8, 16, 32, 64, 128, 256, 512 and 1024).  
 
 Classification methods:  
 - [A1DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 1-Dependence Estimator  
@@ -22,6 +22,7 @@ Classification methods:
 - [FRF](https://github.com/fracpete/fastrandomforest-weka-package) - Fast Random Forest  
 - [HP](http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html) - HyperPipe Classifier  
 - [IBK](http://weka.sourceforge.net/doc.dev/weka/classifiers/lazy/IBk.html) - K-Nearest Neighbours Classifier  
+- [ID3](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/Id3.html) - ID3 Decision Tree  
 - [J48](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html) - C4.5 Decision Tree  
 - [J48C](http://weka.sourceforge.net/packageMetaData/J48Consolidated/index.html) - C4.5 Consolidated Decision Tree  
 - [J48G](http://weka.sourceforge.net/doc.packages/J48graft/weka/classifiers/trees/J48graft.html) - C4.5 Grafted Decision Tree  
@@ -33,12 +34,15 @@ Classification methods:
 - [NBTREE](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html) - Decision Tree with Naive Bayes Classifiers at the leaves  
 - [RBF](http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html) - Radial Basis Function network  
 - [RT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html) - Random Tree  
-- [SGD](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html) - Stochastic Gradient Gescent  
+- [SGD](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html) - Stochastic Gradient Descent  
 - [SMO](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html) - Sequential Minimal Optimization Algorithm  
 - [SPEGASOS](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html) - Stochastic Primal Estimated sub-GrAdient SOlver for SVM  
+- [VP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/VotedPerceptron.html) - Voted Perceptron  
 - [WRF](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html) - Weka Random Forest  
 
 Metrics:  
 - [Precision, recall and F1 score](https://en.wikipedia.org/wiki/Precision_and_recall)  
-- Area under Precision-Recall (PR) and [Receiver Operating Characteristic (ROC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) curves  
+- Area under [Precision-Recall (PR)](https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/) and [Receiver Operating Characteristic (ROC)](https://en.wikipedia.org/wiki/Receiver_operating_characteristic) curves  
 - Training and testing times  
+
+This code also supports t-Distributed Stochastic Neighbor Embedding (t-SNE) to generate bidimensional plots of the data sets. For more information, please refer to the [author's page](https://lvdmaaten.github.io/tsne/).

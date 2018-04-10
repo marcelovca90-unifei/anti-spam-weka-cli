@@ -61,8 +61,8 @@ public class EvaluationHelperTest
         metadata = new DatasetMetadata(folder, 0, 19);
         dataset = datasetHelper.loadDataset(metadata, false);
 
-        String className = "weka.classifiers.functions.VotedPerceptron";
-        String options = "-I 1 -E 1.0 -S 1 -M 10000";
+        String className = "weka.classifiers.trees.RandomTree";
+        String options = "-K 0 -M 1.0 -V 0.001 -S 1";
         classifier = classifierBuilder.withClassName(className).withOptions(options).build();
     }
 
