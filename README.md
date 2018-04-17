@@ -20,15 +20,16 @@ Classification methods:
 - [DTNB](http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/DTNB.html) - Decision Table/Naive Bayes Hybrid Classifier  
 - [FURIA](http://weka.sourceforge.net/packageMetaData/fuzzyUnorderedRuleInduction/index.html) - Fuzzy Unordered Rule Induction Algorithm  
 - [FRF](https://github.com/fracpete/fastrandomforest-weka-package) - Fast Random Forest  
-- [HP](http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html) - HyperPipe Classifier  
+- [HP](http://weka.sourceforge.net/doc.packages/hyperPipes/weka/classifiers/misc/HyperPipes.html) - Hyper Pipes Classifier  
+- [HT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/HoeffdingTree.html) - Hoeffding tree (VFDT)  
 - [IBK](http://weka.sourceforge.net/doc.dev/weka/classifiers/lazy/IBk.html) - K-Nearest Neighbours Classifier  
-- [ID3](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/Id3.html) - ID3 Decision Tree  
 - [J48](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/J48.html) - C4.5 Decision Tree  
 - [J48C](http://weka.sourceforge.net/packageMetaData/J48Consolidated/index.html) - C4.5 Consolidated Decision Tree  
 - [J48G](http://weka.sourceforge.net/doc.packages/J48graft/weka/classifiers/trees/J48graft.html) - C4.5 Grafted Decision Tree  
 - [JRIP](http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/JRip.html) - Repeated Incremental Pruning to Produce Error Reduction  
 - [LIBLINEAR](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Large Linear Classifier  
 - [LIBSVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support Vector Machine  
+- [LMT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/LMT.html) - Logistic Model Trees  
 - [MLP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer Perceptron  
 - [NB](http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html) - Naive Bayes classifier  
 - [NBTREE](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html) - Decision Tree with Naive Bayes Classifiers at the leaves  
