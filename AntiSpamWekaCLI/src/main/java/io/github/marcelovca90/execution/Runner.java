@@ -24,6 +24,7 @@ package io.github.marcelovca90.execution;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.apache.commons.math3.primes.Primes;
 
 import io.github.marcelovca90.analysis.TsneAnalyser;
@@ -80,17 +81,18 @@ public class Runner
                 }
                 metadata.setNumFeaturesAfterReduction(dataset.numAttributes() - 1);
 
-                for (Pair<String, String> classNameAndOptions : config.getClassNamesAndOptions())
+                for (Triple<String, String, String> classNamesOptionsAndLogNames : config.getClassNamesOptionsAndLogNames())
                 {
-                    // parse the classifier class name and options
-                    String className = classNameAndOptions.getLeft();
-                    String options = classNameAndOptions.getRight();
+                    // parse the classifier class name, options and log name
+                    String className = classNamesOptionsAndLogNames.getLeft();
+                    String options = classNamesOptionsAndLogNames.getMiddle();
+                    String logFilename = classNamesOptionsAndLogNames.getRight();
 
                     // build the classifier
                     Classifier classifier = classifierBuilder.withClassName(className).withOptions(options).customize(metadata).build();
 
                     // add logger for this method
-                    evaluationHelper.addAppender(classifier);
+                    evaluationHelper.addAppender(classifier, logFilename);
 
                     // initialize random number generator seed
                     int seed = 2;
@@ -151,7 +153,7 @@ public class Runner
                     evaluationHelper.summarize(metadata, classifier);
 
                     // remove logger for this method
-                    evaluationHelper.removeAppender(classifier);
+                    evaluationHelper.removeAppender(classifier, logFilename);
                 }
 
                 // save to arff

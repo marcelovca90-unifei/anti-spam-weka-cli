@@ -21,6 +21,8 @@
  ******************************************************************************/
 package io.github.marcelovca90.evaluation;
 
+import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,43 +31,55 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.message.FormattedMessage;
 
 import io.github.marcelovca90.data.ClassType;
 import io.github.marcelovca90.data.DatasetMetadata;
+import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
 
 public class EvaluationHelper
 {
     private static final Logger LOGGER = LogManager.getLogger(EvaluationHelper.class);
     private static final Map<Classifier, Map<String, DescriptiveStatistics>> RESULTS = new HashMap<>();
-    private static final Map<Classifier, Appender> APPENDERS = new HashMap<>();
+    private static final Map<Pair<Classifier, String>, Appender> APPENDERS = new HashMap<>();
 
-    public void addAppender(Classifier classifier)
+    public void addAppender(Classifier classifier, String logName)
     {
-        String simpleName = classifier.getClass().getSimpleName();
-        String loggerName = "logs/" + simpleName + ".log";
+        String loggerName = StringUtils.isNotBlank(logName) ? logName : classifier.getClass().getSimpleName();
+        String fileName = String.format("logs%s%s.log", File.separator, loggerName);
 
-        if (!APPENDERS.containsKey(classifier))
+        Pair<Classifier, String> appenderKey = Pair.of(classifier, logName);
+        if (!APPENDERS.containsKey(appenderKey))
         {
-            Appender appender = FileAppender.newBuilder().withFileName(loggerName).withName(simpleName).build();
+            Appender appender = FileAppender.newBuilder().withFileName(fileName).withName(loggerName).build();
             ((org.apache.logging.log4j.core.Logger) LOGGER).addAppender(appender);
             appender.start();
-            APPENDERS.put(classifier, appender);
+            APPENDERS.put(appenderKey, appender);
+
+            String className = classifier.getClass().getName();
+            String options = Arrays.stream(((AbstractClassifier) classifier).getOptions()).collect(Collectors.joining(" "));
+            FormattedMessage message = new FormattedMessage("Built classifier \"{}\" with options \"{}\".", className, options);
+            appender.append(Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(message).build());
         }
     }
 
-    public void removeAppender(Classifier classifier)
+    public void removeAppender(Classifier classifier, String logFilename)
     {
-        Appender appender = APPENDERS.get(classifier);
+        Pair<Classifier, String> appenderKey = Pair.of(classifier, logFilename);
+        Appender appender = APPENDERS.get(appenderKey);
         ((org.apache.logging.log4j.core.Logger) LOGGER).removeAppender(appender);
         appender.stop();
-        APPENDERS.remove(classifier);
+        APPENDERS.remove(appenderKey);
     }
 
     public void compute(Classifier classifier, TimedEvaluation evaluation)

@@ -23,13 +23,13 @@ package io.github.marcelovca90.configuration;
 
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 public class Configuration
 {
     // anti spam settings
     private String metadataPath;
-    private List<Pair<String, String>> classNamesAndOptions;
+    private List<Triple<String, String, String>> classNamesOptionsAndLogNames;
     private int runs;
 
     // run settings
@@ -51,14 +51,14 @@ public class Configuration
         this.metadataPath = metadataPath;
     }
 
-    public List<Pair<String, String>> getClassNamesAndOptions()
+    public List<Triple<String, String, String>> getClassNamesOptionsAndLogNames()
     {
-        return classNamesAndOptions;
+        return classNamesOptionsAndLogNames;
     }
 
-    public void setClassNamesAndOptions(List<Pair<String, String>> classNamesAndOptions)
+    public void setClassNamesOptionsAndLogFilenames(List<Triple<String, String, String>> classNamesOptionsAndLogNames)
     {
-        this.classNamesAndOptions = classNamesAndOptions;
+        this.classNamesOptionsAndLogNames = classNamesOptionsAndLogNames;
     }
 
     public int getRuns()

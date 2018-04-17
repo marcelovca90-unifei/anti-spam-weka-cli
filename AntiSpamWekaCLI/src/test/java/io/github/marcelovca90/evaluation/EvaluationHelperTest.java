@@ -74,11 +74,11 @@ public class EvaluationHelperTest
         performTesting(dataset);
 
         // when
-        evaluationHelper.addAppender(classifier);
+        evaluationHelper.addAppender(classifier, null);
         evaluationHelper.compute(classifier, evaluation);
         evaluationHelper.print(metadata, classifier);
         evaluationHelper.summarize(metadata, classifier);
-        evaluationHelper.removeAppender(classifier);
+        evaluationHelper.removeAppender(classifier, null);
     }
 
     @Test
@@ -96,13 +96,13 @@ public class EvaluationHelperTest
             performTesting(testSet);
 
             // when
-            evaluationHelper.addAppender(classifier);
+            evaluationHelper.addAppender(classifier, null);
             evaluationHelper.compute(classifier, evaluation);
             evaluationHelper.print(metadata, classifier);
         }
 
         evaluationHelper.summarize(metadata, classifier);
-        evaluationHelper.removeAppender(classifier);
+        evaluationHelper.removeAppender(classifier, null);
     }
 
     private void performTraining(Instances trainSet) throws Exception

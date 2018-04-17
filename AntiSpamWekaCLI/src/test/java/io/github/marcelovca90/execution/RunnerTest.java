@@ -38,7 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.compress.utils.Sets;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -125,11 +125,11 @@ public class RunnerTest
     {
         String filename = Paths.get(classLoader.getResource("metadata.txt").toURI()).toFile().getAbsolutePath();
 
-        List<Pair<String, String>> classNamesAndOptions = Arrays.asList(
-            Pair.of("weka.classifiers.functions.MultilayerPerceptron", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a"),
-            Pair.of("weka.classifiers.bayes.NaiveBayes", ""));
+        List<Triple<String, String, String>> classNamesOptionsAndLogFilenames = Arrays.asList(
+            Triple.of("weka.classifiers.functions.MultilayerPerceptron", "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a", ""),
+            Triple.of("weka.classifiers.bayes.NaiveBayes", "", ""));
 
-        when(configuration.getClassNamesAndOptions()).thenReturn(classNamesAndOptions);
+        when(configuration.getClassNamesOptionsAndLogNames()).thenReturn(classNamesOptionsAndLogFilenames);
         when(configuration.getMetadataPath()).thenReturn(filename);
         when(configuration.getRuns()).thenReturn(runs);
         when(configuration.isTsneAnalysis()).thenReturn(tsne);
@@ -166,11 +166,11 @@ public class RunnerTest
         verify(classifierBuilder, times(2)).withOptions(anyString());
         verify(classifierBuilder, times(2)).build();
 
-        verify(evaluationHelper, times(2)).addAppender(any(Classifier.class));
+        verify(evaluationHelper, times(2)).addAppender(any(Classifier.class), anyString());
         verify(evaluationHelper, times(4)).compute(any(Classifier.class), any(TimedEvaluation.class));
         verify(evaluationHelper, times(4)).print(any(DatasetMetadata.class), any(Classifier.class));
         verify(evaluationHelper, times(2)).summarize(any(DatasetMetadata.class), any(Classifier.class));
-        verify(evaluationHelper, times(2)).removeAppender(any(Classifier.class));
+        verify(evaluationHelper, times(2)).removeAppender(any(Classifier.class), anyString());
 
         verify(tsneAnalyser, never()).run(any(DatasetMetadata.class), any(Instances.class), anyBoolean());
     }

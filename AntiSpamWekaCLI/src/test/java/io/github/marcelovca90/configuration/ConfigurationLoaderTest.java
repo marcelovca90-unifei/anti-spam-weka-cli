@@ -43,8 +43,8 @@ public class ConfigurationLoaderTest
         // then
         assertThat(configuration, notNullValue());
         assertThat(configuration.getMetadataPath(), notNullValue());
-        assertThat(configuration.getClassNamesAndOptions(), notNullValue());
-        assertThat(configuration.getClassNamesAndOptions().size(), equalTo(2));
+        assertThat(configuration.getClassNamesOptionsAndLogNames(), notNullValue());
+        assertThat(configuration.getClassNamesOptionsAndLogNames().size(), equalTo(2));
         assertThat(configuration.getRuns(), equalTo(10));
         assertThat(configuration.isTsneAnalysis(), equalTo(false));
         assertThat(configuration.isTsneAnalysis(), equalTo(false));
