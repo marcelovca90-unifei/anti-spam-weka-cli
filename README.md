@@ -40,6 +40,7 @@ Classification methods:
 - [SPEGASOS](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html) - Stochastic Primal Estimated sub-GrAdient SOlver for SVM  
 - [VP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/VotedPerceptron.html) - Voted Perceptron  
 - [WRF](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html) - Weka Random Forest  
+- [WDL4J](https://deeplearning.cms.waikato.ac.nz/) - WekaDeeplearning4J: Deep Learning using Weka
 
 Metrics:  
 - [Precision, recall and F1 score](https://en.wikipedia.org/wiki/Precision_and_recall)  
