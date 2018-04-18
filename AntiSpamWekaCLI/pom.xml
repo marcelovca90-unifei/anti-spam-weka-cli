@@ -1,3 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (C) 2018 Marcelo Vinícius Cysneiros Aragão Permission is hereby 
+    granted, free of charge, to any person obtaining a copy of this software 
+    and associated documentation files (the "Software"), to deal in the Software 
+    without restriction, including without limitation the rights to use, copy, 
+    modify, merge, publish, distribute, sublicense, and/or sell copies of the 
+    Software, and to permit persons to whom the Software is furnished to do so, 
+    subject to the following conditions: The above copyright notice and this 
+    permission notice shall be included in all copies or substantial portions 
+    of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY 
+    KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN 
+    NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+    DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+    DEALINGS IN THE SOFTWARE. -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -23,7 +41,8 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete file="logs/RandomTree.log"/>
+                                <delete
+                                    file="logs/RandomTree.log" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -279,7 +298,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--t-SNE-->
+        <!--t-SNE -->
         <dependency>
             <groupId>tsne-core</groupId>
             <artifactId>tsne</artifactId>
@@ -290,13 +309,13 @@
             <artifactId>JMathPlot</artifactId>
             <version>1.0.1</version>
         </dependency>
-        <!--DL4J Wrappers-->
+        <!--DL4J Wrappers -->
         <dependency>
             <groupId>wekaDeeplearning4j</groupId>
             <artifactId>${wdl4j.wrapper}</artifactId>
             <version>1.4.1-SNAPSHOT</version>
         </dependency>
-        <!--DL4J Dependencies-->
+        <!--DL4J Dependencies -->
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-core</artifactId>
@@ -312,7 +331,7 @@
             <artifactId>deeplearning4j-zoo</artifactId>
             <version>${dl4j.version}</version>
         </dependency>
-        <!--ND4J Dependencies-->
+        <!--ND4J Dependencies -->
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native-api</artifactId>
@@ -331,7 +350,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
-                <!--CPU Specific-->
+                <!--CPU Specific -->
                 <dependency>
                     <groupId>org.nd4j</groupId>
                     <artifactId>nd4j-native-platform</artifactId>
@@ -347,7 +366,7 @@
         <profile>
             <id>GPU</id>
             <dependencies>
-                <!--GPU Specific-->
+                <!--GPU Specific -->
                 <dependency>
                     <groupId>org.bytedeco.javacpp-presets</groupId>
                     <artifactId>cuda</artifactId>
@@ -362,13 +381,13 @@
         </profile>
     </profiles>
     <properties>
-        <!-- The following WEKA DL4J wrappers are available:  -->
-        <!-- wekaDeeplearning4j-CPU-1.4.1-linux (default)     -->
-        <!-- wekaDeeplearning4j-CPU-1.4.1-macosx              -->
-        <!-- wekaDeeplearning4j-CPU-1.4.1-windows             -->
-        <!-- wekaDeeplearning4j-GPU-1.4.1-linux               -->
-        <!-- wekaDeeplearning4j-GPU-1.4.1-macosx              -->
-        <!-- wekaDeeplearning4j-GPU-1.4.1-windows             -->
+        <!-- The following WEKA DL4J wrappers are available: -->
+        <!-- wekaDeeplearning4j-CPU-1.4.1-linux (default) -->
+        <!-- wekaDeeplearning4j-CPU-1.4.1-macosx -->
+        <!-- wekaDeeplearning4j-CPU-1.4.1-windows -->
+        <!-- wekaDeeplearning4j-GPU-1.4.1-linux -->
+        <!-- wekaDeeplearning4j-GPU-1.4.1-macosx -->
+        <!-- wekaDeeplearning4j-GPU-1.4.1-windows -->
         <!-- Select the appropriate one for your OS/platform. -->
         <wdl4j.wrapper>wekaDeeplearning4j-CPU-linux</wdl4j.wrapper>
         <dl4j.version>0.9.1</dl4j.version>
