@@ -15,6 +15,7 @@ Data sets information:
 Classification methods:  
 - [A1DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 1-Dependence Estimator  
 - [A2DE](http://weka.sourceforge.net/packageMetaData/AnDE/index.html) - Averaged 2-Dependence Estimator  
+- [ADTREE](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/ADTree.html) - Alternating Decision Trees  
 - [BFTREE](http://weka.sourceforge.net/doc.packages/bestFirstTree/weka/classifiers/trees/BFTree.html) - Best-first tree  
 - [CART](http://weka.sourceforge.net/doc.packages/simpleCART/weka/classifiers/trees/SimpleCart.html) - Classification And Regression Trees  
 - [DTNB](http://weka.sourceforge.net/doc.stable/weka/classifiers/rules/DTNB.html) - Decision Table/Naive Bayes Hybrid Classifier  
