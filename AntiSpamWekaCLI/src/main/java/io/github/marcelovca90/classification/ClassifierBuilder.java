@@ -56,15 +56,20 @@ public class ClassifierBuilder
             double C = Math.sqrt(metadata.getNumInstances() * (metadata.getNumFeaturesAfterReduction() - 1) + metadata.getNumClasses());
             options = options.replace("-C auto", String.format("-C %.1f", C));
         }
-        else if (className.endsWith("RBFNetwork") && StringUtils.containsIgnoreCase(options, "-B auto"))
+        else if (className.endsWith("MLPClassifier") && StringUtils.containsIgnoreCase(options, "-P auto -E auto"))
         {
-            int B = (int) Math.pow(Math.log(metadata.getNumFeaturesBeforeReduction()) / Math.log(2), 2);
-            options = options.replace("-B auto", String.format("-B %d", B));
+            int procs = Runtime.getRuntime().availableProcessors();
+            options = options.replace("-P auto -E auto", String.format("-P %d -E %d", procs, procs));
         }
         else if (className.endsWith("MultilayerPerceptron") && StringUtils.containsIgnoreCase(options, "-H auto"))
         {
             int h1 = (metadata.getNumFeaturesAfterReduction() + metadata.getNumClasses()) / 2, h2 = h1 / 2;
             options = options.replace("-H auto", String.format("-H %d,%d", h1, h2));
+        }
+        else if (className.endsWith("RBFNetwork") && StringUtils.containsIgnoreCase(options, "-B auto"))
+        {
+            int B = (int) Math.pow(Math.log(metadata.getNumFeaturesBeforeReduction()) / Math.log(2), 2);
+            options = options.replace("-B auto", String.format("-B %d", B));
         }
 
         return this;

@@ -273,6 +273,11 @@
         </dependency>
         <dependency>
             <groupId>weka-packages</groupId>
+            <artifactId>multiLayerPerceptrons</artifactId>
+            <version>1.0.10</version>
+        </dependency>
+        <dependency>
+            <groupId>weka-packages</groupId>
             <artifactId>naiveBayesTree</artifactId>
             <version>1.0.4</version>
         </dependency>

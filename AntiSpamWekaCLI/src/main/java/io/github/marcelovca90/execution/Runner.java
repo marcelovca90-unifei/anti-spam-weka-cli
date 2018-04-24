@@ -21,6 +21,7 @@
  ******************************************************************************/
 package io.github.marcelovca90.execution;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,6 +37,9 @@ import io.github.marcelovca90.data.DatasetMetadata;
 import io.github.marcelovca90.evaluation.EvaluationHelper;
 import io.github.marcelovca90.evaluation.TimedEvaluation;
 import weka.classifiers.Classifier;
+import weka.classifiers.functions.MLPClassifier;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.trees.REPTree;
 import weka.core.Instances;
 
 public class Runner
@@ -111,8 +115,10 @@ public class Runner
                         // shuffle
                         datasetHelper.shuffle(datasetCopy, seed);
 
-                        // split
-                        Pair<Instances, Instances> datasets = datasetHelper.split(datasetCopy, 0.5);
+                        // split with percentage depending of whether the classifier uses a validation set or not
+                        Class<?>[] validatorClassifiers = { MultilayerPerceptron.class, MLPClassifier.class, REPTree.class };
+                        double splitPercentage = Arrays.stream(validatorClassifiers).anyMatch(c -> c.isInstance(classifier)) ? 0.6 : 0.5;
+                        Pair<Instances, Instances> datasets = datasetHelper.split(datasetCopy, splitPercentage);
                         Instances trainSet = datasets.getLeft();
                         Instances testSet = datasets.getRight();
 

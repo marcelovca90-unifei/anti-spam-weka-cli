@@ -123,6 +123,8 @@ public class ClassifierBuilderTest
                 "weka.classifiers.functions.LibLINEAR",
                 "weka.classifiers.functions.LibSVM",
                 "weka.classifiers.functions.LibSVM",
+                "weka.classifiers.functions.MLPClassifier",
+                "weka.classifiers.functions.MLPClassifier",
                 "weka.classifiers.functions.MultilayerPerceptron",
                 "weka.classifiers.functions.MultilayerPerceptron",
                 "weka.classifiers.functions.RBFNetwork",
@@ -133,13 +135,15 @@ public class ClassifierBuilderTest
                 "-S 1 -C auto -E 0.001 -B 1.0 -L 0.1 -I 1000",
                 "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C 1.0 -E 0.001 -P 0.1 -H -seed 1",
                 "-S 0 -K 2 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 1024.0 -C auto -E 0.001 -P 0.1 -H -seed 1",
+                "-N 2 -R 0.01 -O 1.0E-6 -P 1 -E 1 -S 1 -L weka.classifiers.functions.loss.SquaredError -A weka.classifiers.functions.activation.ApproximateSigmoid",
+                "-N 2 -R 0.01 -O 1.0E-6 -P auto -E auto -S 1 -L weka.classifiers.functions.loss.SquaredError -A weka.classifiers.functions.activation.ApproximateSigmoid",
                 "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a",
                 "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H auto",
                 "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1",
                 "-B auto -S 1 -R 1.0E-8 -M -1 -W 0.1"
         };
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < classNames.length; i++)
         {
             // when
             classifier = classifierBuilder.withClassName(classNames[i]).withOptions(options[i]).customize(metadata).build();

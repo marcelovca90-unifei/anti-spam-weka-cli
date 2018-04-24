@@ -31,11 +31,13 @@ Classification methods:
 - [LIBLINEAR](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Large Linear Classifier  
 - [LIBSVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support Vector Machine  
 - [LMT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/LMT.html) - Logistic Model Trees  
-- [MLP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer Perceptron  
+- [MLP-C](http://weka.sourceforge.net/doc.packages/multiLayerPerceptrons/weka/classifiers/functions/MLPClassifier.html) - Multilayer Perceptron (custom, multi-thread)  
+- [MLP-S](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer Perceptron (stock, single-thread)  
 - [NB](http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html) - Naive Bayes classifier  
 - [NBTREE](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html) - Decision Tree with Naive Bayes Classifiers at the leaves  
 - [RBF](http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html) - Radial Basis Function network  
-- [RT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html) - Random Tree  
+- [RANDTREE](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomTree.html) - Random Tree  
+- [REPTREE](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/REPTree.html) - Reduced-Error Pruning Tree  
 - [SGD](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SGD.html) - Stochastic Gradient Descent  
 - [SMO](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/SMO.html) - Sequential Minimal Optimization Algorithm  
 - [SPEGASOS](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html) - Stochastic Primal Estimated sub-GrAdient SOlver for SVM  
