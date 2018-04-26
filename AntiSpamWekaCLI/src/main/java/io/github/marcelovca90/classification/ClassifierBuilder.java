@@ -56,10 +56,18 @@ public class ClassifierBuilder
             double C = Math.sqrt(metadata.getNumInstances() * (metadata.getNumFeaturesAfterReduction() - 1) + metadata.getNumClasses());
             options = options.replace("-C auto", String.format("-C %.1f", C));
         }
-        else if (className.endsWith("MLPClassifier") && StringUtils.containsIgnoreCase(options, "-P auto -E auto"))
+        else if (className.endsWith("MLPClassifier"))
         {
-            int procs = Runtime.getRuntime().availableProcessors();
-            options = options.replace("-P auto -E auto", String.format("-P %d -E %d", procs, procs));
+            if (StringUtils.containsIgnoreCase(options, "-N auto"))
+            {
+                int N = (metadata.getNumFeaturesAfterReduction() + metadata.getNumClasses()) / 2;
+                options = options.replace("-N auto", String.format("-N %d", N));
+            }
+            if (StringUtils.containsIgnoreCase(options, "-P auto -E auto"))
+            {
+                int P = Runtime.getRuntime().availableProcessors(), E = P;
+                options = options.replace("-P auto -E auto", String.format("-P %d -E %d", P, E));
+            }
         }
         else if (className.endsWith("MultilayerPerceptron") && StringUtils.containsIgnoreCase(options, "-H auto"))
         {
