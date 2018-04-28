@@ -31,8 +31,8 @@ Classification methods:
 - [LIBLINEAR](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Large Linear Classifier  
 - [LIBSVM](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/LibSVM.html) - Support Vector Machine  
 - [LMT](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/LMT.html) - Logistic Model Trees  
-- [MLP-C](http://weka.sourceforge.net/doc.packages/multiLayerPerceptrons/weka/classifiers/functions/MLPClassifier.html) - Multilayer Perceptron (custom, multi-thread)  
-- [MLP-S](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer Perceptron (stock, single-thread)  
+- [MLP-BFGS](http://weka.sourceforge.net/doc.packages/multiLayerPerceptrons/weka/classifiers/functions/MLPClassifier.html) - Multilayer Perceptron (custom, multi-thread, trained with BFGS)  
+- [MLP-BPROP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/MultilayerPerceptron.html) - Multilayer Perceptron (stock, single-thread, trained with Backpropagation)  
 - [NB](http://weka.sourceforge.net/doc.dev/weka/classifiers/bayes/NaiveBayes.html) - Naive Bayes classifier  
 - [NBTREE](http://weka.sourceforge.net/doc.stable/weka/classifiers/trees/NBTree.html) - Decision Tree with Naive Bayes Classifiers at the leaves  
 - [RBF](http://weka.sourceforge.net/doc.packages/RBFNetwork/weka/classifiers/functions/RBFNetwork.html) - Radial Basis Function network  
@@ -43,6 +43,7 @@ Classification methods:
 - [SPEGASOS](http://weka.sourceforge.net/doc.stable/weka/classifiers/functions/SPegasos.html) - Stochastic Primal Estimated sub-GrAdient SOlver for SVM  
 - [VP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/VotedPerceptron.html) - Voted Perceptron  
 - [WRF](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html) - Weka Random Forest  
+- [ZERO-RULE](http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html) - Zero Rule Algorithm  
 - [WDL4J](https://deeplearning.cms.waikato.ac.nz/) - WekaDeeplearning4J: Deep Learning using Weka
 
 Metrics:  

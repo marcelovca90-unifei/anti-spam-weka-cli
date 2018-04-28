@@ -42,7 +42,7 @@
                         <configuration>
                             <tasks>
                                 <delete
-                                    file="logs/RandomTree.log" />
+                                    file="logs/ZeroR.log" />
                             </tasks>
                         </configuration>
                     </execution>
