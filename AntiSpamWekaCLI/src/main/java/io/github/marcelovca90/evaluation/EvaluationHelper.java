@@ -44,8 +44,8 @@ import org.apache.logging.log4j.message.FormattedMessage;
 
 import io.github.marcelovca90.data.ClassType;
 import io.github.marcelovca90.data.DatasetMetadata;
-import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.core.OptionHandler;
 
 public class EvaluationHelper
 {
@@ -67,7 +67,7 @@ public class EvaluationHelper
             APPENDERS.put(appenderKey, appender);
 
             String className = classifier.getClass().getName();
-            String options = Arrays.stream(((AbstractClassifier) classifier).getOptions()).collect(Collectors.joining(" "));
+            String options = Arrays.stream(((OptionHandler) classifier).getOptions()).collect(Collectors.joining(" "));
             FormattedMessage message = new FormattedMessage("Built classifier \"{}\" with options \"{}\".", className, options);
             appender.append(Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(message).build());
         }

@@ -41,8 +41,7 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <delete
-                                    file="logs/ZeroR.log" />
+                                <delete file="logs/ZeroR.log" />
                             </tasks>
                         </configuration>
                     </execution>
@@ -307,6 +306,12 @@
                     <artifactId>weka-dev</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!--wekaclassalgos -->
+        <dependency>
+            <groupId>wekaclassalgos</groupId>
+            <artifactId>wekaclassalgos-neural</artifactId>
+            <version>1.8-SNAPSHOT</version>
         </dependency>
         <!--t-SNE -->
         <dependency>

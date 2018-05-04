@@ -129,7 +129,15 @@ public class ClassifierBuilderTest
                 "weka.classifiers.functions.MultilayerPerceptron",
                 "weka.classifiers.functions.MultilayerPerceptron",
                 "weka.classifiers.functions.RBFNetwork",
-                "weka.classifiers.functions.RBFNetwork"
+                "weka.classifiers.functions.RBFNetwork",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BoldDriverBackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BoldDriverBackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BoldDriverBackPropagation",
+                "net.sourceforge.wekaclassalgos.neural.multilayerperceptron.BoldDriverBackPropagation"
         };
         String[] options = new String[] {
                 "-S 1 -C 1.0 -E 0.001 -B 1.0 -L 0.1 -I 1000",
@@ -142,7 +150,15 @@ public class ClassifierBuilderTest
                 "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H a",
                 "-L 0.3 -M 0.2 -N 500 -V 33 -S 1 -E 20 -H auto",
                 "-B 2 -S 1 -R 1.0E-8 -M -1 -W 0.1",
-                "-B auto -S 1 -R 1.0E-8 -M -1 -W 0.1"
+                "-B auto -S 1 -R 1.0E-8 -M -1 -W 0.1",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -N 1 -A 0.2 -D 0.0 -X 0 -Y 0 -Z 0 -M 3",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -N 1 -A 0.2 -D 0.0 -X auto -Y 0 -Z 0 -M 3",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -N 1 -A 0.2 -D 0.0 -X auto -Y auto -Z 0 -M 3",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -N 1 -A 0.2 -D 0.0 -X auto -Y auto -Z auto -M 3",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -A 0.2 -D 0.0 -X 0 -Y 0 -Z 0 -N 1 -K 0.5 -G 1.05",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -A 0.2 -D 0.0 -X auto -Y 0 -Z 0 -N 1 -K 0.5 -G 1.05",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -A 0.2 -D 0.0 -X auto -Y auto -Z 0 -N 1 -K 0.5 -G 1.05",
+                "-I 500 -L 0.1 -B 1.0 -R 1 -F 1 -A 0.2 -D 0.0 -X auto -Y auto -Z auto -N 1 -K 0.5 -G 1.05",
         };
 
         for (int i = 0; i < classNames.length; i++)

@@ -26,8 +26,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.github.marcelovca90.data.DatasetMetadata;
-import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.core.OptionHandler;
 import weka.core.Utils;
 
 public class ClassifierBuilder
@@ -51,7 +51,23 @@ public class ClassifierBuilder
 
     public ClassifierBuilder customize(DatasetMetadata metadata)
     {
-        if ((className.endsWith("LibLINEAR") || className.endsWith("LibSVM")) && StringUtils.containsIgnoreCase(options, "-C auto"))
+        if (className.endsWith("BackPropagation"))
+        {
+            int X = (metadata.getNumFeaturesAfterReduction() + metadata.getNumClasses()) / 2, Y = X / 2, Z = Y / 2;
+            if (StringUtils.containsIgnoreCase(options, "-X auto"))
+            {
+                options = options.replace("-X auto", String.format("-X %d", X));
+            }
+            if (StringUtils.containsIgnoreCase(options, "-Y auto"))
+            {
+                options = options.replace("-Y auto", String.format("-Y %d", Y));
+            }
+            if (StringUtils.containsIgnoreCase(options, "-Z auto"))
+            {
+                options = options.replace("-Z auto", String.format("-Z %d", Z));
+            }
+        }
+        else if ((className.endsWith("LibLINEAR") || className.endsWith("LibSVM")) && StringUtils.containsIgnoreCase(options, "-C auto"))
         {
             double C = Math.sqrt(metadata.getNumInstances() * (metadata.getNumFeaturesAfterReduction() - 1) + metadata.getNumClasses());
             options = options.replace("-C auto", String.format("-C %.1f", C));
@@ -85,13 +101,13 @@ public class ClassifierBuilder
 
     public Classifier build()
     {
-        AbstractClassifier classifier = null;
+        Classifier classifier = null;
 
         try
         {
             Class<?> clazz = Class.forName(className);
-            classifier = (AbstractClassifier) clazz.newInstance();
-            classifier.setOptions(Utils.splitOptions(options));
+            classifier = (Classifier) clazz.newInstance();
+            ((OptionHandler) classifier).setOptions(Utils.splitOptions(options));
 
             LOGGER.info("Built classifier \"{}\" with options \"{}\".", className, options);
         }

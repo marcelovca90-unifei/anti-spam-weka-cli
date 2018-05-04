@@ -44,7 +44,11 @@ Classification methods:
 - [VP](http://weka.sourceforge.net/doc.dev/weka/classifiers/functions/VotedPerceptron.html) - Voted Perceptron  
 - [WRF](http://weka.sourceforge.net/doc.dev/weka/classifiers/trees/RandomForest.html) - Weka Random Forest  
 - [ZERO-RULE](http://weka.sourceforge.net/doc.dev/weka/classifiers/rules/ZeroR.html) - Zero Rule Algorithm  
-- [WDL4J](https://deeplearning.cms.waikato.ac.nz/) - WekaDeeplearning4J: Deep Learning using Weka
+- [SLP-H](https://deeplearning.cms.waikato.ac.nz/) - Single Layer Perceptron (Hebbian Learning) from [wekaclassalgos](http://wekaclassalgos.sourceforge.net/)  
+- [SLP_WH](https://deeplearning.cms.waikato.ac.nz/) - Widrow-Hoff Learning from [wekaclassalgos](http://wekaclassalgos.sourceforge.net/)  
+- [MLP-BP](https://deeplearning.cms.waikato.ac.nz/) - Multilayer Perceptron (Back Propagation) from [wekaclassalgos](http://wekaclassalgos.sourceforge.net/)  
+- [MLP-BDBP](https://deeplearning.cms.waikato.ac.nz/) - Multilayer Perceptron (Bold Driver Back Propagation - Vogl's Method) from [wekaclassalgos](http://wekaclassalgos.sourceforge.net/)  
+- [WDL4J](https://deeplearning.cms.waikato.ac.nz/) - WekaDeeplearning4J: Deep Learning using Weka  
 
 Metrics:  
 - [Precision, recall and F1 score](https://en.wikipedia.org/wiki/Precision_and_recall)  
